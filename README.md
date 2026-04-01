@@ -35,6 +35,30 @@ This project combines front-end interface, back-end automation, and AI-powered c
 - **SQLite / JSON** – Data storage for schedules and approvals  
 - **Docker & Docker Compose** – Deployment and environment setup  
 - **Cloud Build** – Automation for deployment pipelines  
+# How to Run
+
+Clone or download this repository  
+Set up the environment using .env and setup_everything.py  
+Run the main system modules or launch the front-end dashboard:  
+Open index.html in a browser for UI  
+Run Python modules for automation and AI content generation  
+For full deployment, use Docker and Docker Compose  
+
+# Learning Outcomes
+
+Advanced front-end and back-end integration  
+AI-powered content creation and workflow automation  
+Git and GitHub project management for internships
+
+# Internship / Repository Information
+
+This project was developed and uploaded as part of an internship task under:
+
+FursanStudio
+
+# Author
+
+Aoraza
 
 ---
 
@@ -65,31 +89,3 @@ social media OS/
 │── setup_everything.py    # Project setup
 │── README.md              # Project documentation
 
-How to Run
-Clone or download this repository
-Set up the environment using .env and setup_everything.py
-Run the main system modules or launch the front-end dashboard:
-Open index.html in a browser for UI
-Run Python modules for automation and AI content generation
-For full deployment, use Docker and Docker Compose
-Learning Outcomes
-Advanced front-end and back-end integration
-AI-powered content creation and workflow automation
-Git and GitHub project management for internships
-Docker-based deployment pipelines
-Modular and scalable software architecture
-Future Improvements
-Real-time posting to multiple platforms
-User authentication and multi-user support
-Analytics dashboard with engagement metrics
-Integration with additional social media APIs
-More robust AI models for content creation
-Internship / Repository Information
-
-This project was developed and uploaded as part of an internship task under:
-
-FursanStudio
-
-Author
-
-Aoraza
