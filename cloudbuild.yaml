@@ -1,0 +1,34 @@
+steps:
+  # Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/echo-api:$COMMIT_SHA'
+      - '.'
+
+  # Push to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/echo-api:$COMMIT_SHA'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'echo-api'
+      - '--image=gcr.io/$PROJECT_ID/echo-api:$COMMIT_SHA'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--memory=1Gi'
+      - '--cpu=1'
+      - '--max-instances=3'
+      - '--set-env-vars=GROQ_API_KEY=$$GROQ_API_KEY'
+      - '--update-secrets=GROQ_API_KEY=groq-api-key:latest'
+
+images:
+  - 'gcr.io/$PROJECT_ID/echo-api:$COMMIT_SHA'

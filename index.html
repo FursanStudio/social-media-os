@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo — Autonomous Brand Strategist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0a0a0f;
+  --sur:    #0f0f17;
+  --card:   #13131e;
+  --bdr:    #1e1e2e;
+  --bdr2:   #272738;
+  --acc:    #c9a96e;
+  --acc2:   #e8c98a;
+  --grn:    #4ade80;
+  --red:    #f87171;
+  --blu:    #60a5fa;
+  --org:    #fb923c;
+  --txt:    #f0ece4;
+  --txt2:   #c4bfb5;
+  --mut:    #6b6880;
+  --r:      14px;
+  --r2:     8px;
+  --gold:   #c9a96e;
+  --cream:  #f5f0e8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;overflow-x:hidden;}
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+.sb{width:240px;min-height:100vh;background:var(--sur);border-right:1px solid var(--bdr);position:fixed;display:flex;flex-direction:column;z-index:100;transition:.3s;}
+.logo{padding:28px 22px 24px;border-bottom:1px solid var(--bdr);}
+.logo-wordmark{display:flex;align-items:baseline;gap:6px;}
+.logo-echo{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--txt);letter-spacing:-.5px;}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;margin-bottom:4px;box-shadow:0 0 12px var(--gold);}
+.logo-tag{font-size:9px;color:var(--mut);letter-spacing:2.5px;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:6px;}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.4);}50%{opacity:.7;box-shadow:0 0 0 4px rgba(74,222,128,0);}}
+
+.sb-section{padding:20px 14px 4px;font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:2.5px;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;margin:2px 8px;border-radius:var(--r2);cursor:pointer;font-size:13px;color:var(--mut);transition:.15s;border:1px solid transparent;font-weight:400;user-select:none;}
+.nav-item:hover{background:var(--card);color:var(--txt2);}
+.nav-item.active{background:rgba(201,169,110,.08);color:var(--gold);border-color:rgba(201,169,110,.18);}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;font-size:9px;padding:2px 7px;border-radius:20px;background:rgba(201,169,110,.12);color:var(--gold);font-weight:600;letter-spacing:.5px;}
+
+.sb-footer{margin-top:auto;padding:16px 20px;border-top:1px solid var(--bdr);}
+.sb-api{font-size:10px;color:var(--mut);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
+.sb-api-input{width:100%;background:var(--bg);border:1px solid var(--bdr2);border-radius:6px;color:var(--txt2);font-family:'DM Mono',monospace;font-size:10px;padding:7px 10px;outline:none;}
+.sb-api-input:focus{border-color:var(--gold);}
+.sb-ver{font-size:9px;color:var(--mut);margin-top:8px;opacity:.5;}
+
+/* ── MAIN ─────────────────────────────────────────── */
+.main{margin-left:240px;flex:1;min-height:100vh;}
+
+/* ── TOPBAR ─────────────────────────────────────────── */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);padding:0 32px;height:58px;display:flex;align-items:center;gap:16px;}
+.topbar-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--txt);opacity:.7;}
+.topbar-sep{width:1px;height:16px;background:var(--bdr2);}
+.topbar-sub{font-size:11px;color:var(--mut);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.status-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--card);border:1px solid var(--bdr2);font-size:11px;cursor:pointer;}
+.status-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite;}
+
+/* ── PAGE CONTAINER ─────────────────────────────────── */
+.page{display:none;padding:36px 36px 60px;animation:fadeUp .35s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* ── SECTION HEADER ─────────────────────────────────── */
+.page-header{margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--bdr);}
+.page-eyebrow{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:3px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.page-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,169,110,.3),transparent);}
+.page-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--txt2);line-height:1.6;}
+
+/* ── DASHBOARD ─────────────────────────────────────── */
+.hero{background:linear-gradient(135deg,#0f0f1a 0%,#13101a 50%,#0f1318 100%);border:1px solid var(--bdr);border-radius:var(--r);padding:48px;margin-bottom:28px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 70%);}
+.hero::after{content:'';position:absolute;bottom:-40px;left:100px;width:200px;height:200px;background:radial-gradient(circle,rgba(96,165,250,.04) 0%,transparent 70%);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.2);border-radius:20px;padding:5px 14px;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-bottom:20px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1.15;margin-bottom:14px;position:relative;z-index:1;}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:14px;color:var(--txt2);max-width:540px;line-height:1.7;margin-bottom:28px;position:relative;z-index:1;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden;transition:.2s;}
+.stat-card:hover{border-color:var(--bdr2);transform:translateY(-2px);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.gold::before{background:linear-gradient(90deg,var(--gold),transparent);}
+.stat-card.green::before{background:linear-gradient(90deg,var(--grn),transparent);}
+.stat-card.blue::before{background:linear-gradient(90deg,var(--blu),transparent);}
+.stat-card.orange::before{background:linear-gradient(90deg,var(--org),transparent);}
+.stat-label{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.stat-value{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;line-height:1;}
+.stat-sub{font-size:11px;color:var(--mut);margin-top:4px;}
+
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.agent-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:22px;transition:.2s;cursor:pointer;position:relative;overflow:hidden;}
+.agent-card:hover{border-color:rgba(201,169,110,.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3);}
+.agent-card::after{content:'→';position:absolute;right:18px;bottom:18px;font-size:16px;color:var(--gold);opacity:0;transition:.2s;}
+.agent-card:hover::after{opacity:1;right:14px;}
+.agent-icon{width:44px;height:44px;border-radius:10px;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.15);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.agent-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;margin-bottom:6px;}
+.agent-desc{font-size:12px;color:var(--txt2);line-height:1.6;}
+
+/* ── CARDS ─────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;margin-bottom:20px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bdr);}
+.card-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;display:flex;align-items:center;gap:10px;}
+.card-icon{font-size:18px;}
+
+/* ── GRID LAYOUTS ─────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* ── FORM ─────────────────────────────────────────── */
+.field{margin-bottom:16px;}
+.field-label{display:block;font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600;}
+input,textarea,select{width:100%;background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r2);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 14px;outline:none;transition:.15s;}
+input:focus,textarea:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.08);}
+textarea{resize:vertical;min-height:80px;line-height:1.6;}
+select option{background:var(--sur);}
+input::placeholder,textarea::placeholder{color:var(--mut);}
+
+/* ── PLATFORM GRID ────────────────────────────────── */
+.platform-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;}
+.platform-chip{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r2);cursor:pointer;transition:.15s;font-size:11px;color:var(--mut);}
+.platform-chip.active{background:rgba(201,169,110,.08);border-color:var(--gold);color:var(--gold);}
+.platform-chip .pic{font-size:22px;}
+.platform-chip:hover{border-color:var(--bdr);}
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border-radius:var(--r2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:.2s;white-space:nowrap;}
+.btn-primary{background:var(--gold);color:#0a0a0f;} 
+.btn-primary:hover{background:var(--acc2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,169,110,.25);}
+.btn-ghost{background:rgba(201,169,110,.08);color:var(--gold);border:1px solid rgba(201,169,110,.2);}
+.btn-ghost:hover{background:rgba(201,169,110,.14);}
+.btn-outline{background:transparent;color:var(--txt2);border:1px solid var(--bdr2);}
+.btn-outline:hover{color:var(--txt);border-color:var(--bdr);background:var(--card);}
+.btn-danger{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2);}
+.btn-danger:hover{background:rgba(248,113,113,.17);}
+.btn-success{background:rgba(74,222,128,.1);color:var(--grn);border:1px solid rgba(74,222,128,.2);}
+.btn-success:hover{background:rgba(74,222,128,.17);}
+.btn-sm{padding:7px 14px;font-size:12px;}
+.btn-full{width:100%;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+
+/* ── OUTPUT AREAS ─────────────────────────────────── */
+.output{background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r2);padding:16px;font-size:13px;line-height:1.75;white-space:pre-wrap;word-break:break-word;margin-top:14px;display:none;max-height:360px;overflow-y:auto;color:var(--txt2);}
+.output.visible{display:block;}
+.output-tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab-btn{padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--mut);transition:.15s;font-family:'DM Sans',sans-serif;}
+.tab-btn.active{background:var(--card);color:var(--txt);border-color:var(--bdr);}
+
+/* ── LOADER ─────────────────────────────────────── */
+.loader{display:none;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin-top:10px;}
+.loader.visible{display:flex;}
+.spinner{width:16px;height:16px;border:2px solid var(--bdr2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── BADGES ─────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.3px;}
+.badge-gold{background:rgba(201,169,110,.12);color:var(--gold);}
+.badge-green{background:rgba(74,222,128,.1);color:var(--grn);}
+.badge-red{background:rgba(248,113,113,.1);color:var(--red);}
+.badge-blue{background:rgba(96,165,250,.1);color:var(--blu);}
+.badge-orange{background:rgba(251,146,60,.1);color:var(--org);}
+
+/* ── SCHEDULE TABLE ─────────────────────────────── */
+.sched-table{width:100%;border-collapse:collapse;}
+.sched-table th{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;padding:0 14px 12px;text-align:left;font-weight:600;border-bottom:1px solid var(--bdr);}
+.sched-row{border-bottom:1px solid var(--bdr);transition:.15s;}
+.sched-row:hover{background:rgba(255,255,255,.02);}
+.sched-row td{padding:14px;font-size:12px;vertical-align:middle;}
+.sched-content{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt2);}
+.sched-img{width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--sur);}
+
+/* ── IMAGE PREVIEW ──────────────────────────────── */
+.img-container{background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r2);overflow:hidden;aspect-ratio:1;display:flex;align-items:center;justify-content:center;margin-top:14px;}
+.img-container img{width:100%;height:100%;object-fit:cover;display:none;}
+.img-container img.visible{display:block;}
+.img-placeholder{color:var(--mut);font-size:12px;text-align:center;padding:20px;}
+
+/* ── VOICE UI ──────────────────────────────────── */
+.voice-btn{width:64px;height:64px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;transition:.2s;box-shadow:0 4px 20px rgba(201,169,110,.3);flex-shrink:0;}
+.voice-btn:hover{transform:scale(1.05);box-shadow:0 6px 28px rgba(201,169,110,.4);}
+.voice-btn.recording{background:var(--red);animation:recPulse 1.5s infinite;box-shadow:0 4px 20px rgba(248,113,113,.4);}
+@keyframes recPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.voice-row{display:flex;align-items:center;gap:20px;padding:24px;background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r);}
+.voice-info h3{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:4px;}
+.voice-info p{font-size:12px;color:var(--mut);line-height:1.5;}
+.voice-transcript{background:var(--bg);border:1px solid var(--bdr2);border-radius:var(--r2);padding:14px;font-size:13px;color:var(--txt2);min-height:50px;margin-top:12px;display:none;line-height:1.6;}
+.voice-transcript.visible{display:block;}
+
+/* ── AUTOPILOT PROGRESS ──────────────────────────── */
+.ap-progress{background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r);padding:22px;display:none;}
+.ap-progress.visible{display:block;}
+.progress-bar{background:var(--bdr);border-radius:20px;height:6px;margin:12px 0;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--acc2));border-radius:20px;transition:width .5s ease;width:0%;}
+.ap-log{background:var(--bg);border-radius:var(--r2);padding:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mut);height:140px;overflow-y:auto;margin-top:12px;line-height:1.8;}
+
+/* ── QUEUE CARD ──────────────────────────────────── */
+.queue-card{background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r);padding:18px;margin-bottom:12px;display:flex;gap:16px;align-items:flex-start;}
+.queue-card img{width:60px;height:60px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--bdr);}
+.queue-body{flex:1;min-width:0;}
+.queue-text{font-size:12px;color:var(--txt2);line-height:1.6;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.queue-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.queue-actions{display:flex;gap:6px;margin-top:10px;}
+
+/* ── DIVIDER ─────────────────────────────────────── */
+.divider{border:none;border-top:1px solid var(--bdr);margin:24px 0;}
+
+/* ── LINKEDIN CONNECT ────────────────────────────── */
+.connect-box{background:linear-gradient(135deg,rgba(10,102,194,.08),rgba(10,102,194,.04));border:1px solid rgba(10,102,194,.25);border-radius:var(--r);padding:24px;margin-bottom:20px;}
+.connect-box-title{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.connect-box-sub{font-size:12px;color:var(--txt2);line-height:1.7;margin-bottom:16px;}
+.steps-list{counter-reset:steps;}
+.step-item{display:flex;gap:12px;margin-bottom:12px;font-size:12px;color:var(--txt2);line-height:1.6;}
+.step-num{width:22px;height:22px;border-radius:50%;background:rgba(10,102,194,.2);color:var(--blu);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-item code{background:var(--bg);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);border:1px solid var(--bdr2);}
+
+/* ── SCROLLBAR ───────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--mut);}
+
+/* ── IMAGE OUTPUT SECTION ────────────────────────── */
+.img-result{display:none;margin-top:14px;}
+.img-result.visible{display:block;}
+.img-result img{width:100%;border-radius:var(--r2);border:1px solid var(--bdr2);}
+.img-prompt{font-size:11px;color:var(--mut);margin-top:8px;font-family:'DM Mono',monospace;padding:8px 10px;background:var(--bg);border-radius:6px;line-height:1.6;}
+
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════ -->
+<aside class="sb">
+  <div class="logo">
+    <div class="logo-wordmark">
+      <span class="logo-echo">Echo</span>
+      <span class="logo-dot"></span>
+    </div>
+    <div class="logo-tag">
+      <span>Autonomous Brand OS</span>
+    </div>
+  </div>
+
+  <div class="sb-section">Core</div>
+  <div class="nav-item active" onclick="go('dashboard')"><span class="nav-icon">◈</span> Dashboard</div>
+  <div class="nav-item" onclick="go('autopilot')"><span class="nav-icon">⚡</span> AutoPilot <span class="nav-badge">AI</span></div>
+  <div class="nav-item" onclick="go('voice')"><span class="nav-icon">🎙</span> Voice Mode</div>
+
+  <div class="sb-section">Create</div>
+  <div class="nav-item" onclick="go('writer')"><span class="nav-icon">✦</span> Content Writer</div>
+  <div class="nav-item" onclick="go('images')"><span class="nav-icon">◻</span> Image Studio</div>
+  <div class="nav-item" onclick="go('abtest')"><span class="nav-icon">⇄</span> A/B Headlines</div>
+
+  <div class="sb-section">Publish</div>
+  <div class="nav-item" onclick="go('schedule')"><span class="nav-icon">◷</span> Schedule</div>
+  <div class="nav-item" onclick="go('linkedin')"><span class="nav-icon">in</span> LinkedIn Post <span class="nav-badge">Free</span></div>
+  <div class="nav-item" onclick="go('queue')"><span class="nav-icon">▦</span> Approval Queue</div>
+
+  <div class="sb-section">Intelligence</div>
+  <div class="nav-item" onclick="go('triage')"><span class="nav-icon">◈</span> Comment Triage</div>
+  <div class="nav-item" onclick="go('safety')"><span class="nav-icon">◉</span> Brand Safety</div>
+  <div class="nav-item" onclick="go('memory')"><span class="nav-icon">◎</span> Brand Memory</div>
+
+  <div class="sb-footer">
+    <div class="sb-api">API Endpoint</div>
+    <input class="sb-api-input" id="apiUrl" value="http://localhost:8001" placeholder="http://localhost:8001">
+    <div class="sb-ver">Echo v4.0 · Autonomous Brand OS</div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-sub" id="topbar-sub">Welcome to Echo</span>
+    <div class="topbar-right">
+      <div class="status-pill" onclick="healthCheck()">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">Checking...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DASHBOARD ──────────────────────────────────── -->
+  <div class="page active" id="pg-dashboard">
+    <div class="hero">
+      <div class="hero-badge">✦ Autonomous AI</div>
+      <h1 class="hero-title">Your Brand, <em>Fully Automated.</em></h1>
+      <p class="hero-sub">Echo researches trends, writes platform-perfect content, generates images, schedules posts, and publishes — all from a single voice command or click.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="go('autopilot')">⚡ Launch AutoPilot</button>
+        <button class="btn btn-ghost" onclick="go('voice')">🎙 Voice Mode</button>
+        <button class="btn btn-outline" onclick="go('writer')">✦ Write Content</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-label">Total Posts</div>
+        <div class="stat-value" id="stat-posts">—</div>
+        <div class="stat-sub">scheduled & published</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Published</div>
+        <div class="stat-value" id="stat-pub">—</div>
+        <div class="stat-sub">live on platforms</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="stat-pend">—</div>
+        <div class="stat-sub">scheduled ahead</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-label">Avg Safety</div>
+        <div class="stat-value" id="stat-safety">—</div>
+        <div class="stat-sub">brand safety score</div>
+      </div>
+    </div>
+
+    <h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:16px;color:var(--txt2);">Quick Access</h2>
+    <div class="agents-grid">
+      <div class="agent-card" onclick="go('autopilot')">
+        <div class="agent-icon">⚡</div>
+        <div class="agent-name">AutoPilot</div>
+        <div class="agent-desc">One click — AI writes, images, schedules and publishes everything for your brand automatically.</div>
+      </div>
+      <div class="agent-card" onclick="go('voice')">
+        <div class="agent-icon">🎙</div>
+        <div class="agent-name">Voice Mode</div>
+        <div class="agent-desc">Speak your ideas. Echo transcribes, extracts topics, and runs the full pipeline automatically.</div>
+      </div>
+      <div class="agent-card" onclick="go('writer')">
+        <div class="agent-icon">✦</div>
+        <div class="agent-name">Content Writer</div>
+        <div class="agent-desc">Generate platform-perfect posts for LinkedIn, Instagram, X, Facebook, and TikTok.</div>
+      </div>
+      <div class="agent-card" onclick="go('images')">
+        <div class="agent-icon">◻</div>
+        <div class="agent-name">Image Studio</div>
+        <div class="agent-desc">AI writes the perfect prompt, then generates a professional marketing image for any platform.</div>
+      </div>
+      <div class="agent-card" onclick="go('linkedin')">
+        <div class="agent-icon">in</div>
+        <div class="agent-name">LinkedIn Publisher</div>
+        <div class="agent-desc">Write and publish directly to LinkedIn. Free with your access token — no business account needed.</div>
+      </div>
+      <div class="agent-card" onclick="go('triage')">
+        <div class="agent-icon">◈</div>
+        <div class="agent-name">Comment Triage</div>
+        <div class="agent-desc">Paste comments — AI classifies each as Lead, Support, Troll, or Question with reply suggestions.</div>
+      </div>
+    </div>
+
+    <div id="health-out" style="display:none;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;font-size:12px;font-family:'DM Mono',monospace;margin-top:4px;"></div>
+  </div>
+
+  <!-- ── AUTOPILOT ──────────────────────────────────── -->
+  <div class="page" id="pg-autopilot">
+    <div class="page-header">
+      <div class="page-eyebrow">AI Automation</div>
+      <h1 class="page-title">AutoPilot</h1>
+      <p class="page-sub">Enter your brand details — Echo writes content, generates images, scores safety, and schedules everything automatically.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">◈</span> Brand Settings</div></div>
+          <div class="field"><label class="field-label">Brand / Business Name</label><input id="ap-brand" placeholder="e.g. Aoraza Dairy Farm"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="ap-industry" placeholder="e.g. dairy, fashion, tech"></div>
+          <div class="field"><label class="field-label">Topics (one per line)</label><textarea id="ap-topics" style="min-height:100px;" placeholder="Sustainable dairy farming&#10;New milk product launch&#10;Farm-to-table benefits"></textarea></div>
+          <div class="g2">
+            <div class="field"><label class="field-label">Days to Schedule</label><input id="ap-days" type="number" value="7" min="1" max="30"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">◉</span> Platforms</div></div>
+          <div class="platform-grid">
+            <div class="platform-chip active" id="pc-LinkedIn" onclick="togglePlatform('LinkedIn')"><span class="pic">💼</span>LinkedIn</div>
+            <div class="platform-chip active" id="pc-Instagram" onclick="togglePlatform('Instagram')"><span class="pic">📸</span>Instagram</div>
+            <div class="platform-chip active" id="pc-Facebook" onclick="togglePlatform('Facebook')"><span class="pic">👥</span>Facebook</div>
+            <div class="platform-chip active" id="pc-X" onclick="togglePlatform('X')"><span class="pic">𝕏</span>X</div>
+            <div class="platform-chip active" id="pc-TikTok" onclick="togglePlatform('TikTok')"><span class="pic">🎵</span>TikTok</div>
+          </div>
+          <button class="btn btn-primary btn-full" id="ap-btn" onclick="runAutopilot()" style="margin-top:4px;">⚡ Launch AutoPilot</button>
+        </div>
+      </div>
+      <div>
+        <div class="ap-progress" id="ap-progress">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;">Running Pipeline</div>
+            <span id="ap-prog-txt" style="font-size:11px;color:var(--mut);"></span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="ap-prog"></div></div>
+          <div class="ap-log" id="ap-log"></div>
+        </div>
+        <div class="card" id="ap-done-card" style="display:none;">
+          <div class="card-header"><div class="card-title" style="color:var(--grn);">✅ AutoPilot Complete</div></div>
+          <div id="ap-done-body" style="font-size:13px;color:var(--txt2);line-height:1.7;"></div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="go('schedule')">View Schedule →</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:0;">
+          <div class="card-header"><div class="card-title"><span class="card-icon">◎</span> How AutoPilot Works</div></div>
+          <div style="font-size:12px;color:var(--txt2);line-height:1.9;">
+            <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--gold);font-weight:700;">01</span> Writes platform-specific content for each topic</div>
+            <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--gold);font-weight:700;">02</span> Generates a matching AI image for each post</div>
+            <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--gold);font-weight:700;">03</span> Runs brand safety check on every post</div>
+            <div style="display:flex;gap:10px;margin-bottom:8px;"><span style="color:var(--gold);font-weight:700;">04</span> Schedules posts at optimal times over your selected days</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold);font-weight:700;">05</span> Saves everything to database — publish when ready</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VOICE ──────────────────────────────────────── -->
+  <div class="page" id="pg-voice">
+    <div class="page-header">
+      <div class="page-eyebrow">Voice Automation</div>
+      <h1 class="page-title">Voice Mode</h1>
+      <p class="page-sub">Speak your brand instructions — Echo transcribes, extracts topics, and runs the full content pipeline automatically.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="voice-row">
+            <button class="voice-btn" id="voice-btn" onclick="toggleRecording()">🎙</button>
+            <div class="voice-info">
+              <h3>Speak Your Instructions</h3>
+              <p id="voice-status">Click the microphone and speak your brand name, industry, and what topics you want to post about.</p>
+            </div>
+          </div>
+          <div class="voice-transcript visible" id="voice-transcript" style="display:none;"></div>
+          <div style="margin-top:14px;" id="voice-form" style="display:none;">
+            <div class="field"><label class="field-label">Brand Name</label><input id="v-brand" placeholder="Extracted from voice or type here"></div>
+            <div class="field"><label class="field-label">Industry</label><input id="v-industry" placeholder="e.g. dairy, fashion, tech"></div>
+            <div class="field"><label class="field-label">Days</label><input id="v-days" type="number" value="7"></div>
+            <div class="loader visible" id="v-ldr" style="display:none!important;">
+              <div class="spinner"></div><span id="v-ldr-txt">Processing voice...</span>
+            </div>
+            <button class="btn btn-primary btn-full" id="v-run-btn" onclick="runVoiceAutopilot()" style="display:none;">⚡ Run AutoPilot from Voice</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">💡 Example Voice Commands</div></div>
+          <div style="font-size:12px;color:var(--txt2);line-height:2;">
+            <div style="padding:10px;background:var(--sur);border-radius:6px;margin-bottom:8px;font-style:italic;">"I want to post for Aoraza Dairy Farm about sustainable farming, new products, and health benefits"</div>
+            <div style="padding:10px;background:var(--sur);border-radius:6px;margin-bottom:8px;font-style:italic;">"Create content for my fashion brand about summer collection, styling tips, and behind the scenes"</div>
+            <div style="padding:10px;background:var(--sur);border-radius:6px;font-style:italic;">"Post about my tech startup — AI tools, productivity hacks, and team culture"</div>
+          </div>
+        </div>
+        <div class="ap-progress" id="v-progress" style="margin-top:16px;">
+          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:8px;">Running Voice Pipeline</div>
+          <div class="progress-bar"><div class="progress-fill" id="v-prog"></div></div>
+          <div class="ap-log" id="v-log"></div>
+        </div>
+        <div class="card" id="v-done-card" style="display:none;margin-top:16px;">
+          <div style="color:var(--grn);font-family:'Playfair Display',serif;font-size:15px;margin-bottom:8px;">✅ Voice AutoPilot Complete</div>
+          <div id="v-done-body" style="font-size:12px;color:var(--txt2);line-height:1.7;"></div>
+          <button class="btn btn-ghost btn-sm" onclick="go('schedule')" style="margin-top:12px;">View Schedule →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WRITER ──────────────────────────────────────── -->
+  <div class="page" id="pg-writer">
+    <div class="page-header">
+      <div class="page-eyebrow">Content Creation</div>
+      <h1 class="page-title">Content Writer</h1>
+      <p class="page-sub">Generate platform-optimised posts for any social network with the right tone, length, and hooks.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">✦</span> Generate Content</div></div>
+          <div class="field"><label class="field-label">Topic</label><input id="wr-topic" placeholder="e.g. sustainable dairy farming practices"></div>
+          <div class="field"><label class="field-label">Brand Name</label><input id="wr-brand" placeholder="e.g. Aoraza"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="wr-industry" placeholder="e.g. dairy, fashion"></div>
+          <div class="output-tabs" style="margin-top:4px;">
+            <button class="tab-btn active" id="wrTab-linkedin" onclick="wrTab('linkedin',this)">💼 LinkedIn</button>
+            <button class="tab-btn" id="wrTab-instagram" onclick="wrTab('instagram',this)">📸 Instagram</button>
+            <button class="tab-btn" id="wrTab-x" onclick="wrTab('x',this)">𝕏 X</button>
+            <button class="tab-btn" id="wrTab-facebook" onclick="wrTab('facebook',this)">👥 Facebook</button>
+            <button class="tab-btn" id="wrTab-tiktok" onclick="wrTab('tiktok',this)">🎵 TikTok</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="btn btn-primary" onclick="writeOne(currentWrTab)" style="flex:1;">Generate Post</button>
+            <button class="btn btn-ghost btn-sm" onclick="queueFromWriter(currentWrTab,'wr-out')">+ Queue</button>
+          </div>
+          <div class="loader" id="wr-ldr"><div class="spinner"></div><span>Writing post...</span></div>
+          <div class="output" id="wr-out"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">◉</span> Full Social Pack</div></div>
+          <p style="font-size:12px;color:var(--mut);margin-bottom:14px;">Generate all 5 platforms at once from one topic.</p>
+          <div class="field"><label class="field-label">Topic</label><input id="pk-topic" placeholder="Enter your topic"></div>
+          <div class="field"><label class="field-label">Brand</label><input id="pk-brand" placeholder="Brand name"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="pk-industry" placeholder="Industry"></div>
+          <button class="btn btn-primary btn-full" onclick="runPack()">Generate All Platforms</button>
+          <div class="loader" id="pk-ldr"><div class="spinner"></div><span>Writing all platforms...</span></div>
+          <div style="margin-top:12px;" id="pk-results"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">⇄</span> A/B Headline Test</div></div>
+          <p style="font-size:12px;color:var(--mut);margin-bottom:14px;">Two AI agents debate which headline performs better.</p>
+          <div class="field"><label class="field-label">Topic</label><input id="ab-topic" placeholder="Topic to test"></div>
+          <div class="field"><label class="field-label">Brand</label><input id="ab-brand" placeholder="Brand name"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="ab-industry" placeholder="Industry"></div>
+          <button class="btn btn-ghost btn-full" onclick="runAB()">⇄ Run A/B Debate</button>
+          <div class="loader" id="ab-ldr"><div class="spinner"></div><span>Running debate...</span></div>
+          <div class="output" id="ab-out"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── IMAGE STUDIO ────────────────────────────────── -->
+  <div class="page" id="pg-images">
+    <div class="page-header">
+      <div class="page-eyebrow">Visual Creation</div>
+      <h1 class="page-title">Image Studio</h1>
+      <p class="page-sub">AI writes a professional prompt from your content, then generates a platform-optimised image. Uses Hugging Face FLUX (free).</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">◻</span> Generate Image</div></div>
+          <div class="field"><label class="field-label">Content / Topic</label><textarea id="img-content" placeholder="Paste your post content or describe the image you want..."></textarea></div>
+          <div class="field"><label class="field-label">Brand Name</label><input id="img-brand" placeholder="e.g. Aoraza"></div>
+          <div class="field"><label class="field-label">Platform</label>
+            <select id="img-platform">
+              <option>Instagram</option><option>LinkedIn</option><option>Facebook</option><option>X</option><option>TikTok</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="generateImage()">Generate Image</button>
+          <div class="loader" id="img-ldr"><div class="spinner"></div><span id="img-ldr-txt">Writing prompt & generating image...</span></div>
+          <div class="img-result" id="img-result">
+            <div class="img-prompt" id="img-prompt-used"></div>
+            <img id="img-out" src="" alt="Generated image" style="width:100%;border-radius:var(--r2);border:1px solid var(--bdr2);margin-top:8px;" onload="this.style.display='block'" onerror="this.style.display='none'">
+            <div id="img-loading-note" style="display:none;font-size:11px;color:var(--mut);margin-top:8px;padding:10px;background:var(--bg);border-radius:6px;">⏳ Image loading... AI generation takes 5-15 seconds. Please wait — do not click again.</div>
+            <div style="margin-top:10px;display:flex;gap:8px;">
+              <a id="img-download" class="btn btn-outline btn-sm" download="echo-image.jpg">⬇ Download</a>
+              <button class="btn btn-ghost btn-sm" onclick="regenerateImage()">↺ Regenerate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">ℹ️ Image Generation</div></div>
+          <div style="font-size:12px;color:var(--txt2);line-height:1.9;">
+            <div style="margin-bottom:12px;padding:12px;background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.15);border-radius:var(--r2);">
+              <div style="color:var(--gold);font-weight:600;margin-bottom:4px;">How it works</div>
+              Groq AI first writes a detailed professional prompt from your content, then Hugging Face FLUX generates the actual image.
+            </div>
+            <div style="margin-bottom:8px;"><strong style="color:var(--txt);">To enable Hugging Face:</strong></div>
+            <div class="step-item"><span class="step-num">1</span>Go to <strong style="color:var(--gold);">huggingface.co</strong> → sign up free</div>
+            <div class="step-item"><span class="step-num">2</span>Profile → Settings → Access Tokens → New Token</div>
+            <div class="step-item"><span class="step-num">3</span>Add to <code>.env</code>: <code>HF_TOKEN=hf_...</code></div>
+            <div style="margin-top:12px;padding:10px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--mut);">Without HF_TOKEN, Pollinations is used as fallback — images load in browser after 5-15 seconds (normal).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCHEDULE ────────────────────────────────────── -->
+  <div class="page" id="pg-schedule">
+    <div class="page-header">
+      <div class="page-eyebrow">Post Management</div>
+      <h1 class="page-title">Schedule</h1>
+      <p class="page-sub">View and manage all scheduled posts. Publish directly to LinkedIn from here.</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span class="card-icon">◷</span> Scheduled Posts</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="sched-filter" placeholder="Filter by brand..." style="width:160px;margin:0;padding:7px 12px;font-size:12px;">
+          <button class="btn btn-outline btn-sm" onclick="loadSchedule()">↺ Refresh</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="tab-btn active" onclick="filterSched('all',this)">All</button>
+        <button class="tab-btn" onclick="filterSched('scheduled',this)">Scheduled</button>
+        <button class="tab-btn" onclick="filterSched('published',this)">Published</button>
+        <button class="tab-btn" onclick="filterSched('cancelled',this)">Cancelled</button>
+      </div>
+      <div id="sched-body"><div style="color:var(--mut);font-size:13px;padding:20px 0;">Click Refresh to load posts.</div></div>
+    </div>
+  </div>
+
+  <!-- ── LINKEDIN ────────────────────────────────────── -->
+  <div class="page" id="pg-linkedin">
+    <div class="page-header">
+      <div class="page-eyebrow">Social Publishing</div>
+      <h1 class="page-title">LinkedIn Publisher</h1>
+      <p class="page-sub">Write and publish directly to LinkedIn — completely free with your personal access token.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="connect-box">
+          <div class="connect-box-title">💼 How to Get Your Free LinkedIn Token</div>
+          <div class="connect-box-sub">LinkedIn allows personal posting via OAuth. Get a token in 10 minutes — no business account, no payment.</div>
+          <div class="steps-list">
+            <div class="step-item"><span class="step-num">1</span>Go to <strong style="color:var(--blu);">linkedin.com/developers</strong> → Create App</div>
+            <div class="step-item"><span class="step-num">2</span>Fill any name/logo → Submit → go to Auth tab</div>
+            <div class="step-item"><span class="step-num">3</span>Add redirect URL: <code>https://localhost</code></div>
+            <div class="step-item"><span class="step-num">4</span>Add product: <strong>Share on LinkedIn</strong> + <strong>Sign In with LinkedIn</strong></div>
+            <div class="step-item"><span class="step-num">5</span>Use OAuth 2.0 to get token — or use LinkedIn token generator tools online</div>
+            <div class="step-item"><span class="step-num">6</span>Add to <code>.env</code>: <code>LINKEDIN_ACCESS_TOKEN=your_token</code></div>
+            <div class="step-item"><span class="step-num">7</span>Add to <code>.env</code>: <code>LINKEDIN_PERSON_URN=your_person_id</code></div>
+          </div>
+          <div style="margin-top:14px;padding:10px 14px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);border-radius:var(--r2);font-size:11px;color:var(--txt2);">
+            <strong style="color:var(--blu);">Find your Person URN:</strong> Call <code>https://api.linkedin.com/v2/me</code> with your token — the "id" field is your URN.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">✦</span> Write & Publish</div></div>
+          <div class="field"><label class="field-label">Topic</label><input id="li-topic" placeholder="e.g. sustainable dairy farming"></div>
+          <div class="field"><label class="field-label">Brand Name</label><input id="li-brand" placeholder="e.g. Aoraza"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="li-industry" placeholder="e.g. dairy, tech, fashion"></div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <button class="btn btn-outline btn-sm" onclick="writeLI()" style="flex:1;">✦ Generate Post</button>
+          </div>
+          <div class="loader" id="li-write-ldr"><div class="spinner"></div><span>Writing LinkedIn post...</span></div>
+          <div class="field" style="margin-top:12px;">
+            <label class="field-label">Post Content (edit before publishing)</label>
+            <textarea id="li-content" style="min-height:160px;" placeholder="Generate a post above, or type/paste your LinkedIn content here..."></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">Image URL (optional)</label>
+            <input id="li-image" placeholder="https://... or leave blank for text-only post">
+          </div>
+          <button class="btn btn-primary btn-full" onclick="publishLI()">💼 Publish to LinkedIn</button>
+          <div class="loader" id="li-pub-ldr"><div class="spinner"></div><span>Publishing to LinkedIn...</span></div>
+          <div class="output" id="li-out"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Test Connection</div></div>
+          <button class="btn btn-outline btn-full" onclick="testLinkedIn()">Test LinkedIn Connection</button>
+          <div class="output" id="li-test-out" style="margin-top:12px;"></div>
+        </div>
+        <div class="card" style="margin-top:16px;">
+          <div class="card-header"><div class="card-title">🆓 Alternative: Mastodon</div></div>
+          <div style="font-size:12px;color:var(--txt2);line-height:1.8;margin-bottom:14px;">
+            Mastodon is 100% free social media with a real API — no approval, no payment. Great for testing posting functionality.
+          </div>
+          <div class="step-item"><span class="step-num">1</span>Go to <strong style="color:var(--gold);">mastodon.social</strong> → create free account</div>
+          <div class="step-item"><span class="step-num">2</span>Settings → Development → New Application → Submit</div>
+          <div class="step-item"><span class="step-num">3</span>Copy Access Token → add to <code>.env</code></div>
+          <div style="margin-top:14px;">
+            <div class="field"><label class="field-label">Mastodon Post Content</label><textarea id="mast-content" placeholder="Post text..." style="min-height:80px;"></textarea></div>
+            <button class="btn btn-ghost btn-full" onclick="publishMastodon()">🐘 Post to Mastodon</button>
+            <div class="output" id="mast-out"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── QUEUE ──────────────────────────────────────── -->
+  <div class="page" id="pg-queue">
+    <div class="page-header">
+      <div class="page-eyebrow">Human in the Loop</div>
+      <h1 class="page-title">Approval Queue</h1>
+      <p class="page-sub">Review AI-generated content before publishing. Approve or reject each post.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-icon">▦</span> Pending Approval</div>
+            <button class="btn btn-outline btn-sm" onclick="loadQueue()">↺ Refresh</button>
+          </div>
+          <div id="queue-body"><div style="color:var(--mut);font-size:13px;">Click Refresh to load queue.</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">+ Add to Queue</div></div>
+          <div class="field"><label class="field-label">Platform</label><select id="q-platform"><option>LinkedIn</option><option>Instagram</option><option>Facebook</option><option>X</option><option>TikTok</option></select></div>
+          <div class="field"><label class="field-label">Content</label><textarea id="q-content" placeholder="Paste content to add to queue..."></textarea></div>
+          <div class="field"><label class="field-label">Brand</label><input id="q-brand" placeholder="Brand name"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="q-industry" placeholder="Industry"></div>
+          <button class="btn btn-primary btn-full" onclick="addToQueue()">Add to Queue</button>
+          <div class="output" id="q-out"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRIAGE ──────────────────────────────────────── -->
+  <div class="page" id="pg-triage">
+    <div class="page-header">
+      <div class="page-eyebrow">Community Management</div>
+      <h1 class="page-title">Comment Triage</h1>
+      <p class="page-sub">Paste comments — AI classifies each as Lead, Support, Troll, or Question, with suggested replies.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="field"><label class="field-label">Comments (one per line)</label><textarea id="tri-comments" style="min-height:160px;" placeholder="Paste comments here, one per line..."></textarea></div>
+          <div class="field"><label class="field-label">Brand Name</label><input id="tri-brand" placeholder="Brand name"></div>
+          <button class="btn btn-primary btn-full" onclick="runTriage()">Analyse Comments</button>
+          <div class="loader" id="tri-ldr"><div class="spinner"></div><span>Analysing comments...</span></div>
+        </div>
+      </div>
+      <div><div id="tri-out"></div></div>
+    </div>
+  </div>
+
+  <!-- ── SAFETY ──────────────────────────────────────── -->
+  <div class="page" id="pg-safety">
+    <div class="page-header">
+      <div class="page-eyebrow">Brand Protection</div>
+      <h1 class="page-title">Brand Safety</h1>
+      <p class="page-sub">Check content for brand safety issues before publishing. Flags controversial or off-brand content.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="field"><label class="field-label">Content to Check</label><textarea id="sf-content" style="min-height:160px;" placeholder="Paste content to safety-check..."></textarea></div>
+          <div class="field"><label class="field-label">Brand</label><input id="sf-brand" placeholder="Brand name"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="sf-industry" placeholder="Industry"></div>
+          <button class="btn btn-primary btn-full" onclick="runSafety()">Run Safety Check</button>
+          <div class="loader" id="sf-ldr"><div class="spinner"></div><span>Checking content safety...</span></div>
+          <div class="output" id="sf-out"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">◉ Safety Criteria</div></div>
+          <div style="font-size:12px;color:var(--txt2);line-height:2;">
+            <div>✓ Controversial language detection</div>
+            <div>✓ Off-brand tone identification</div>
+            <div>✓ Sensitive topic flagging</div>
+            <div>✓ Compliance risk assessment</div>
+            <div>✓ Audience-appropriateness check</div>
+            <div>✓ Hashtag safety analysis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BRAND MEMORY ────────────────────────────────── -->
+  <div class="page" id="pg-memory">
+    <div class="page-header">
+      <div class="page-eyebrow">Brand Intelligence</div>
+      <h1 class="page-title">Brand Memory</h1>
+      <p class="page-sub">Store your brand voice, tone guidelines, and successful posts. Echo learns to write like your brand.</p>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">◎</span> Add Memory</div></div>
+          <div class="field"><label class="field-label">Brand Name</label><input id="mem-brand" placeholder="Brand name"></div>
+          <div class="field"><label class="field-label">Content Type</label>
+            <select id="mem-type">
+              <option value="post">Successful Post</option>
+              <option value="brand_voice">Brand Voice Guide</option>
+              <option value="ceo_voice">CEO Writing Style</option>
+              <option value="product">Product Info</option>
+              <option value="forbidden">Forbidden Words/Topics</option>
+            </select>
+          </div>
+          <div class="field"><label class="field-label">Content</label><textarea id="mem-content" style="min-height:120px;" placeholder="Paste the content to save to brand memory..."></textarea></div>
+          <button class="btn btn-primary btn-full" onclick="addMem()">Save to Brand Memory</button>
+          <div id="mem-ok" style="display:none;margin-top:10px;color:var(--grn);font-size:13px;">✅ Saved to brand memory!</div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="card-icon">⚡</span> Seed Brand Memory</div></div>
+          <p style="font-size:12px;color:var(--txt2);margin-bottom:16px;">Automatically generate baseline brand guidelines from your brand name and industry.</p>
+          <div class="field"><label class="field-label">Brand Name</label><input id="seed-brand" placeholder="Brand name"></div>
+          <div class="field"><label class="field-label">Industry</label><input id="seed-industry" placeholder="e.g. dairy, fashion, tech"></div>
+          <button class="btn btn-ghost btn-full" onclick="seedMem()">⚡ Auto-Seed Memory</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const API = () => document.getElementById('apiUrl').value.replace(/\/$/,'');
+const P = (p,b) => fetch(API()+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(async r=>{if(!r.ok)throw new Error(`HTTP ${r.status}: ${await r.text()}`);return r.json();});
+const G = (p) => fetch(API()+p).then(async r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});
+const DEL = (p) => fetch(API()+p,{method:'DELETE'}).then(r=>r.json());
+const v = id => document.getElementById(id)?.value?.trim()||'';
+const el = id => document.getElementById(id);
+const show = (id,s=true) => { const e=el(id); if(e) e.style.display=s?'block':'none'; };
+const ldr = (id,on) => { const e=el(id); if(e) e.classList.toggle('visible',on); };
+const txt = (id,t) => { const e=el(id); if(e){e.textContent=t; e.classList.add('visible');} };
+
+const TOPBAR_TITLES = {
+  dashboard:'Dashboard',autopilot:'AutoPilot',voice:'Voice Mode',writer:'Content Writer',
+  images:'Image Studio',schedule:'Schedule',linkedin:'LinkedIn Publisher',queue:'Approval Queue',
+  triage:'Comment Triage',safety:'Brand Safety',memory:'Brand Memory'
+};
+const TOPBAR_SUBS = {
+  dashboard:'Overview of your automated brand OS',autopilot:'AI runs all agents automatically',
+  voice:'Speak your content strategy',writer:'Platform-specific content generation',
+  images:'AI-powered image generation',schedule:'Manage scheduled posts',
+  linkedin:'Publish directly to LinkedIn',queue:'Human-in-the-loop approval',
+  triage:'Classify and respond to comments',safety:'Brand safety analysis',
+  memory:'Store your brand voice and guidelines'
+};
+
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg = el('pg-'+id);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('active');
+  });
+  el('topbar-title').textContent = TOPBAR_TITLES[id]||id;
+  el('topbar-sub').textContent = TOPBAR_SUBS[id]||'';
+  if(id==='schedule') loadSchedule();
+  if(id==='queue') loadQueue();
+  if(id==='dashboard') loadStats();
+}
+
+// ── STATUS ──────────────────────────────────────────────
+async function checkStatus(){
+  const st=el('status-text'), dot=el('status-dot');
+  try{
+    await G('/echo/health');
+    st.textContent='Online'; dot.style.background='var(--grn)';
+  }catch{
+    st.textContent='Offline'; dot.style.background='var(--red)';
+  }
+}
+async function healthCheck(){
+  const o=el('health-out'); o.style.display='block'; o.textContent='Checking...';
+  try{
+    const d=await G('/echo/health');
+    o.innerHTML=`<span style="color:var(--grn)">✅ Connected</span> · AI: ${d.ai_provider} · Platforms: ${d.platforms?.join(', ')}`;
+  }catch(e){
+    o.innerHTML=`<span style="color:var(--red)">❌ Offline</span> — Run: python echo_api.py`;
+  }
+}
+
+// ── STATS ───────────────────────────────────────────────
+async function loadStats(){
+  try{
+    const d=await G('/echo/schedule');
+    const posts=d.posts||[];
+    el('stat-posts').textContent=posts.length;
+    el('stat-pub').textContent=posts.filter(p=>p.status==='published').length;
+    el('stat-pend').textContent=posts.filter(p=>p.status==='scheduled').length;
+    const scores=posts.filter(p=>p.safety_score>0).map(p=>p.safety_score);
+    el('stat-safety').textContent=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'%':'—';
+  }catch{}
+}
+
+// ── PLATFORMS ───────────────────────────────────────────
+const selectedPlatforms = new Set(['LinkedIn','Instagram','Facebook','X','TikTok']);
+function togglePlatform(p){
+  const e=el('pc-'+p);
+  if(selectedPlatforms.has(p)){selectedPlatforms.delete(p);e.classList.remove('active');}
+  else{selectedPlatforms.add(p);e.classList.add('active');}
+}
+
+// ── AUTOPILOT ───────────────────────────────────────────
+async function runAutopilot(){
+  const brand=v('ap-brand'),industry=v('ap-industry'),topicsRaw=v('ap-topics'),days=parseInt(v('ap-days'))||7;
+  if(!brand||!industry||!topicsRaw)return alert('Fill in brand, industry, and topics');
+  const topics=topicsRaw.split('\n').map(t=>t.trim()).filter(Boolean);
+  const platforms=[...selectedPlatforms];
+  if(!topics.length)return alert('Add at least one topic');
+  if(!platforms.length)return alert('Select at least one platform');
+  const total=topics.length*platforms.length;
+  el('ap-btn').disabled=true;
+  el('ap-progress').classList.add('visible');
+  el('ap-done-card').style.display='none';
+  el('ap-prog').style.width='0%';
+  el('ap-prog-txt').textContent=`0 / ${total} posts`;
+  el('ap-log').textContent='';
+  const log=msg=>{el('ap-log').textContent+=msg+'\n';el('ap-log').scrollTop=99999;};
+  log(`⚡ AutoPilot started for ${brand}`);
+  log(`📋 ${topics.length} topics × ${platforms.length} platforms = ${total} posts`);
+  log(`📅 Scheduling over ${days} days...\n`);
+  let fake=0;
+  const fi=setInterval(()=>{if(fake<85){fake+=100/total/4;el('ap-prog').style.width=Math.min(fake,85)+'%';}},2500);
+  const li=setInterval(()=>{
+    const msgs=['🤖 Writing content...','🎨 Generating images...','✅ Safety checking...','📅 Scheduling posts...'];
+    log(msgs[Math.floor(Math.random()*msgs.length)]);
+  },4000);
+  try{
+    const d=await P('/echo/autopilot',{brand_name:brand,industry,topics,platforms,days_ahead:days});
+    clearInterval(fi);clearInterval(li);
+    el('ap-prog').style.width='100%';
+    el('ap-prog-txt').textContent=`${total} / ${total} posts`;
+    log('\n🎉 AutoPilot complete!');
+    el('ap-done-card').style.display='block';
+    el('ap-done-body').innerHTML=`<strong style="color:var(--grn)">${d.total_posts} posts created</strong> across ${platforms.length} platforms over ${days} days.<br><br>${Object.entries(d.summary||{}).map(([p,c])=>`${p}: ${c} posts`).join(' · ')}`;
+    loadStats();
+  }catch(e){
+    clearInterval(fi);clearInterval(li);
+    log('\n❌ Error: '+e.message);
+  }
+  el('ap-btn').disabled=false;
+}
+
+// ── VOICE ───────────────────────────────────────────────
+let mediaRecorder=null, audioChunks=[], recording=false;
+async function toggleRecording(){
+  if(recording){
+    recording=false;
+    mediaRecorder?.stop();
+    el('voice-btn').classList.remove('recording');
+    el('voice-btn').textContent='🎙';
+    el('voice-status').textContent='Processing your audio...';
+  } else {
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder=new MediaRecorder(stream);
+      audioChunks=[];
+      mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
+      mediaRecorder.onstop=async()=>{
+        const blob=new Blob(audioChunks,{type:'audio/webm'});
+        await sendAudio(blob);
+        stream.getTracks().forEach(t=>t.stop());
+      };
+      mediaRecorder.start();
+      recording=true;
+      el('voice-btn').classList.add('recording');
+      el('voice-btn').textContent='⏹';
+      el('voice-status').textContent='Recording... click Stop when done';
+    }catch(e){
+      alert('Microphone access denied. Please allow microphone access in browser settings.');
+    }
+  }
+}
+
+async function sendAudio(blob){
+  const fd=new FormData(); fd.append('file',blob,'voice.webm');
+  try{
+    const r=await fetch(API()+'/echo/transcribe',{method:'POST',body:fd});
+    const d=await r.json();
+    const transcript=d.transcript||d.text||'';
+    el('voice-transcript').textContent=transcript;
+    el('voice-transcript').style.display='block';
+    el('voice-status').textContent='Transcript ready — edit brand/industry below and launch.';
+    // Try to extract brand name
+    const brandMatch=transcript.match(/for ([A-Z][a-zA-Z\s]+?)(?:\s+about|\s+in|\s+industry|$)/i);
+    if(brandMatch) el('v-brand').value=brandMatch[1].trim();
+    el('v-run-btn').style.display='block';
+    el('voice-form').style.display='block';
+  }catch(e){
+    el('voice-status').textContent='Transcription failed: '+e.message;
+  }
+}
+
+async function runVoiceAutopilot(){
+  const brand=v('v-brand'), industry=v('v-industry'), transcript=el('voice-transcript').textContent;
+  if(!brand||!industry)return alert('Fill in brand and industry');
+  // Extract topics from transcript
+  el('v-run-btn').disabled=true;
+  el('v-progress').classList.add('visible');
+  el('v-done-card').style.display='none';
+  el('v-log').textContent='';
+  const log=msg=>{el('v-log').textContent+=msg+'\n';el('v-log').scrollTop=99999;};
+  log('🎙 Processing voice input...');
+  log('🧠 Extracting topics from transcript...');
+  // Simple topic extraction from transcript
+  const words=transcript.split(/\s+/);
+  const stopWords=new Set(['i','want','to','post','for','about','the','a','an','and','or','in','my','we','our','is','are','have','this','that','with']);
+  const topics=[];
+  let chunk=[];
+  words.forEach(w=>{
+    const clean=w.replace(/[^a-zA-Z\s]/g,'').toLowerCase();
+    if(clean==='about'||clean==='and'){if(chunk.length>2){topics.push(chunk.join(' '));} chunk=[];}
+    else if(!stopWords.has(clean)&&clean.length>2) chunk.push(w);
+  });
+  if(chunk.length>1) topics.push(chunk.join(' '));
+  const finalTopics=topics.slice(0,5).filter(Boolean);
+  if(!finalTopics.length) finalTopics.push('brand content','industry news','product updates');
+  log(`📋 Topics: ${finalTopics.join(', ')}`);
+  log('⚡ Launching AutoPilot...');
+  let fake=0;
+  const fi=setInterval(()=>{if(fake<85){fake+=5;el('v-prog').style.width=fake+'%';}},3000);
+  try{
+    const d=await P('/echo/voice-autopilot',{brand_name:brand,industry,transcript,days_ahead:parseInt(v('v-days'))||7});
+    clearInterval(fi);
+    el('v-prog').style.width='100%';
+    log('\n✅ Complete!');
+    el('v-done-card').style.display='block';
+    el('v-done-body').textContent=`${d.total_posts||0} posts created for ${brand}`;
+    loadStats();
+  }catch(e){
+    clearInterval(fi);
+    log('\n❌ Error: '+e.message);
+  }
+  el('v-run-btn').disabled=false;
+}
+
+// ── WRITER ──────────────────────────────────────────────
+let currentWrTab='linkedin';
+function wrTab(id,el_){
+  currentWrTab=id;
+  document.querySelectorAll('[id^="wrTab-"]').forEach(b=>b.classList.remove('active'));
+  el_.classList.add('active');
+}
+
+async function writeOne(platform){
+  const t=v('wr-topic'),b=v('wr-brand'),i=v('wr-industry');
+  if(!t)return alert('Enter a topic');
+  ldr('wr-ldr',true);
+  const eps={linkedin:'/echo/write-linkedin',x:'/echo/write-x',instagram:'/echo/write-instagram',facebook:'/echo/write-facebook',tiktok:'/echo/write-tiktok'};
+  try{
+    const d=await P(eps[platform]||eps.linkedin,{topic:t,brand_name:b,industry:i});
+    txt('wr-out',d.content||d.post||JSON.stringify(d,null,2));
+  }catch(e){txt('wr-out','Error: '+e.message);}
+  ldr('wr-ldr',false);
+}
+
+async function queueFromWriter(platform,outId){
+  const content=el(outId)?.textContent; if(!content)return alert('Generate content first');
+  const brand=v('wr-brand'),industry=v('wr-industry');
+  try{const d=await P('/echo/queue/add',{platform,content,brand_name:brand,industry});alert(`✅ Added to queue! ID: ${d.post_id}`);}
+  catch(e){alert('Error: '+e.message);}
+}
+
+async function runPack(){
+  const t=v('pk-topic'),b=v('pk-brand'),i=v('pk-industry');
+  if(!t)return alert('Enter a topic');
+  ldr('pk-ldr',true);
+  el('pk-results').innerHTML='';
+  try{
+    const d=await P('/echo/social-pack',{topic:t,brand_name:b,industry:i});
+    const platforms=['linkedin','instagram','x','facebook','tiktok'];
+    let html='';
+    platforms.forEach(p=>{
+      const content=d[p]||d[p+'_post']||'';
+      if(content) html+=`<div style="margin-bottom:12px;"><div style="font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">${p}</div><div style="background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r2);padding:12px;font-size:12px;color:var(--txt2);line-height:1.6;white-space:pre-wrap;">${content}</div></div>`;
+    });
+    el('pk-results').innerHTML=html||'<div style="color:var(--mut);">No content returned</div>';
+  }catch(e){el('pk-results').innerHTML='<div style="color:var(--red);">Error: '+e.message+'</div>';}
+  ldr('pk-ldr',false);
+}
+
+async function runAB(){
+  const t=v('ab-topic'),b=v('ab-brand'),i=v('ab-industry');
+  if(!t)return alert('Enter a topic');
+  ldr('ab-ldr',true);
+  try{const d=await P('/echo/ab-test',{topic:t,brand_name:b,industry:i});txt('ab-out',d.debate||d.result||JSON.stringify(d,null,2));}
+  catch(e){txt('ab-out','Error: '+e.message);}
+  ldr('ab-ldr',false);
+}
+
+// ── IMAGES ──────────────────────────────────────────────
+let lastImgContent='',lastImgPlatform='',lastImgBrand='';
+async function generateImage(){
+  const content=v('img-content'),brand=v('img-brand'),platform=v('img-platform');
+  if(!content)return alert('Enter content or topic');
+  lastImgContent=content;lastImgPlatform=platform;lastImgBrand=brand;
+  ldr('img-ldr',true);
+  el('img-result').classList.remove('visible');
+  try{
+    const d=await P('/echo/generate-image',{content,brand_name:brand,platform});
+    el('img-prompt-used').textContent='📝 Prompt: '+( d.prompt||'');
+    const img=el('img-out');
+    const note=el('img-loading-note');
+    if(d.image_url?.startsWith('data:')){
+      img.src=d.image_url;
+      img.style.display='block';
+      note.style.display='none';
+      el('img-download').href=d.image_url;
+    } else {
+      img.src=d.image_url;
+      img.style.display='block';
+      note.style.display='block';
+      note.textContent='⏳ Image loading... AI generation takes 5-15 seconds. Please wait.';
+      img.onload=()=>{note.style.display='none';};
+      img.onerror=()=>{
+        note.textContent='⚠️ Image failed — trying fallback...';
+        if(d.fallback_url){img.src=d.fallback_url;}
+      };
+      el('img-download').href=d.image_url;
+    }
+    el('img-result').classList.add('visible');
+  }catch(e){alert('Image error: '+e.message);}
+  ldr('img-ldr',false);
+}
+async function regenerateImage(){ await generateImage(); }
+
+// ── SCHEDULE ────────────────────────────────────────────
+let allPosts=[],schedFilter='all';
+async function loadSchedule(){
+  const brand=v('sched-filter');
+  try{
+    const d=await G('/echo/schedule'+(brand?`?brand_name=${brand}`:''));
+    allPosts=d.posts||[];
+    renderSched(schedFilter);
+  }catch(e){el('sched-body').innerHTML='<div style="color:var(--red);">Error: '+e.message+'</div>';}
+}
+function filterSched(status,elBtn){
+  schedFilter=status;
+  document.querySelectorAll('.output-tabs .tab-btn, .page .tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick')?.includes('filterSched')) b.classList.remove('active');
+  });
+  if(elBtn) elBtn.classList.add('active');
+  renderSched(status);
+}
+function renderSched(status){
+  const posts=status==='all'?allPosts:allPosts.filter(p=>p.status===status);
+  if(!posts.length){el('sched-body').innerHTML='<div style="color:var(--mut);padding:20px 0;font-size:13px;">No posts found.</div>';return;}
+  let html='<table class="sched-table"><thead><tr><th>Image</th><th>Brand</th><th>Platform</th><th>Content</th><th>Scheduled</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+  posts.forEach(p=>{
+    const statusColors={scheduled:'badge-blue',published:'badge-green',cancelled:'badge-red',failed:'badge-red'};
+    const img=p.image_url?`<img src="${p.image_url}" class="sched-img" onerror="this.style.display='none'">`:`<div class="sched-img" style="background:var(--bdr2);border-radius:6px;"></div>`;
+    html+=`<tr class="sched-row">
+      <td>${img}</td>
+      <td style="font-size:12px;">${p.brand_name||'—'}</td>
+      <td><span class="badge badge-gold">${p.platform||'—'}</span></td>
+      <td><div class="sched-content">${p.content||'—'}</div></td>
+      <td style="font-size:11px;color:var(--mut);">${(p.scheduled_at||'').slice(0,16).replace('T',' ')}</td>
+      <td><span class="badge ${statusColors[p.status]||'badge-gold'}">${p.status}</span></td>
+      <td>
+        <div style="display:flex;gap:5px;">
+          ${p.status==='scheduled'?`<button class="btn btn-success btn-sm" onclick="schedAction('${p.id}','published')">Publish</button>`:''}
+          <button class="btn btn-danger btn-sm" onclick="schedDel('${p.id}')">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  el('sched-body').innerHTML=html;
+}
+// REPLACE your existing schedAction function in index.html
+// Find this in your index.html:
+//   async function schedAction(id,status){
+// And replace the entire function with this:
+
+async function schedAction(id, status) {
+    // Find the post data from our loaded posts
+    const post = allPosts.find(p => p.id === id);
+    if (!post) {
+        alert('Post not found — click Refresh first');
+        return;
+    }
+
+    if (status === 'published') {
+        // Actually publish to the real platform
+        const platform = post.platform || 'LinkedIn';
+        const confirmed = confirm(
+            `Publish this post to ${platform}?\n\n"${(post.content || '').slice(0, 100)}..."`
+        );
+        if (!confirmed) return;
+
+        // Show loading
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = 'Publishing...';
+        btn.disabled = true;
+
+        try {
+            const d = await P('/echo/publish-now', {
+                post_id:   id,
+                platform:  platform,
+                content:   post.content  || '',
+                image_url: post.image_url || ''
+            });
+
+            if (d.success) {
+                const url = d.live_url || d.post_url || d.url || '';
+                alert(
+                    `✅ Published to ${platform}!\n\n` +
+                    (url ? `View post: ${url}` : 'Check your profile to see the post.')
+                );
+                loadSchedule();
+                loadStats();
+            } else {
+                alert(`❌ Failed to publish:\n${d.error || JSON.stringify(d)}`);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert('❌ Error: ' + e.message);
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+
+    } else {
+        // For cancelled/other status — just update DB
+        try {
+            await P('/echo/schedule/update', { post_id: id, status });
+            loadSchedule();
+        } catch (e) {
+            alert('Error: ' + e.message);
+        }
+    }
+}
+
+async function schedDel(id){
+  if(!confirm('Delete this post?'))return;
+  try{await DEL('/echo/schedule/'+id);loadSchedule();}
+  catch(e){alert('Error: '+e.message);}
+}
+
+// ── LINKEDIN ────────────────────────────────────────────
+async function writeLI(){
+  const t=v('li-topic'),b=v('li-brand'),i=v('li-industry');
+  if(!t)return alert('Enter a topic');
+  ldr('li-write-ldr',true);
+  try{
+    const d=await P('/echo/write-linkedin',{topic:t,brand_name:b,industry:i});
+    el('li-content').value=d.content||d.post||'';
+  }catch(e){alert('Error: '+e.message);}
+  ldr('li-write-ldr',false);
+}
+async function publishLI(){
+  const content=v('li-content'),image=v('li-image');
+  if(!content)return alert('Write or generate content first');
+  ldr('li-pub-ldr',true);
+  try{
+    const d=await P('/echo/linkedin/post',{content,image_url:image});
+    txt('li-out',d.success?`✅ Posted! ${d.post_url||d.url||''}`:`❌ Error: ${d.error||JSON.stringify(d)}`);
+  }catch(e){txt('li-out','❌ Error: '+e.message);}
+  ldr('li-pub-ldr',false);
+}
+async function testLinkedIn(){
+  try{const d=await G('/echo/linkedin/test');txt('li-test-out',JSON.stringify(d,null,2));}
+  catch(e){txt('li-test-out','Error: '+e.message);}
+}
+async function publishMastodon(){
+  const content=v('mast-content');
+  if(!content)return alert('Enter content');
+  try{
+    const d=await P('/echo/mastodon/post',{content});
+    txt('mast-out',d.success?`✅ Posted! ${d.url||''}`:`❌ ${d.error}`);
+  }catch(e){txt('mast-out','Error: '+e.message);}
+}
+
+// ── QUEUE ───────────────────────────────────────────────
+async function loadQueue(){
+  try{
+    const d=await G('/echo/queue');
+    const items=d.pending||d.all||[];
+    if(!items.length){el('queue-body').innerHTML='<div style="color:var(--mut);font-size:13px;">Queue is empty.</div>';return;}
+    let html='';
+    items.forEach(p=>{
+      html+=`<div class="queue-card">
+        <img src="${p.image_url||''}" onerror="this.style.display='none'">
+        <div class="queue-body">
+          <div class="queue-meta"><span class="badge badge-gold">${p.platform}</span><span style="font-size:11px;color:var(--mut);">${p.brand_name}</span></div>
+          <div class="queue-text">${p.content||''}</div>
+          <div class="queue-actions">
+            <button class="btn btn-success btn-sm" onclick="qApprove('${p.post_id||p.id}')">✓ Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="qReject('${p.post_id||p.id}')">✕ Reject</button>
+          </div>
+        </div>
+      </div>`;
+    });
+    el('queue-body').innerHTML=html;
+  }catch(e){el('queue-body').innerHTML='<div style="color:var(--red);">Error: '+e.message+'</div>';}
+}
+async function addToQueue(){
+  const platform=v('q-platform'),content=v('q-content'),brand=v('q-brand'),industry=v('q-industry');
+  if(!content)return alert('Enter content');
+  try{const d=await P('/echo/queue/add',{platform,content,brand_name:brand,industry});txt('q-out','✅ Added! ID: '+d.post_id);loadQueue();}
+  catch(e){txt('q-out','Error: '+e.message);}
+}
+async function qApprove(id){try{await P('/echo/queue/approve',{post_id:id,notes:'Approved'});loadQueue();}catch(e){alert(e.message);}}
+async function qReject(id){const n=prompt('Reason:')||'';try{await P('/echo/queue/reject',{post_id:id,notes:n});loadQueue();}catch(e){alert(e.message);}}
+
+// ── TRIAGE ──────────────────────────────────────────────
+async function runTriage(){
+  const raw=v('tri-comments'),b=v('tri-brand');
+  if(!raw)return alert('Paste some comments');
+  const comments=raw.split('\n').map(c=>c.trim()).filter(Boolean);
+  ldr('tri-ldr',true);
+  el('tri-out').innerHTML='';
+  try{
+    const results=await P('/echo/triage-comments',{comments,brand_name:b});
+    const colorMap={lead:'badge-green',support:'badge-blue',troll:'badge-red',question:'badge-orange',complaint:'badge-orange'};
+    let html='';
+    results.forEach(r=>{
+      html+=`<div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <span class="badge ${colorMap[r.category?.toLowerCase()]||'badge-gold'}">${r.category||'Unknown'}</span>
+          <span style="font-size:11px;color:var(--mut);">Priority: ${r.priority||'—'}/5</span>
+        </div>
+        <div style="font-size:12px;color:var(--txt2);margin-bottom:8px;font-style:italic;">"${r.comment||''}"</div>
+        ${r.suggested_reply?`<div style="font-size:12px;color:var(--txt);background:var(--bg);padding:10px;border-radius:6px;border:1px solid var(--bdr2);">💬 ${r.suggested_reply}</div>`:''}
+      </div>`;
+    });
+    el('tri-out').innerHTML=html;
+  }catch(e){el('tri-out').innerHTML='<div style="color:var(--red);">Error: '+e.message+'</div>';}
+  ldr('tri-ldr',false);
+}
+
+// ── SAFETY ──────────────────────────────────────────────
+async function runSafety(){
+  const c=v('sf-content'),b=v('sf-brand'),i=v('sf-industry');
+  if(!c)return alert('Enter content to check');
+  ldr('sf-ldr',true);
+  try{
+    const d=await P('/echo/safety-check',{content:c,brand_name:b,industry:i});
+    const score=d.safety_score||0;
+    const color=score>=80?'var(--grn)':score>=60?'var(--org)':'var(--red)';
+    txt('sf-out',`Safety Score: ${score}/100\n\nVerdict: ${d.verdict||''}\n\nIssues: ${(d.issues||[]).join(', ')||'None'}\n\nRecommendation: ${d.recommendation||''}`);
+  }catch(e){txt('sf-out','Error: '+e.message);}
+  ldr('sf-ldr',false);
+}
+
+// ── MEMORY ──────────────────────────────────────────────
+async function addMem(){
+  const b=v('mem-brand'),c=v('mem-content'),t=v('mem-type');
+  if(!b||!c)return alert('Fill in brand and content');
+  try{
+    await P('/echo/brand-memory/add',{brand_name:b,content:c,content_type:t});
+    el('mem-ok').style.display='block';
+    el('mem-content').value='';
+    setTimeout(()=>el('mem-ok').style.display='none',3000);
+  }catch(e){alert('Error: '+e.message);}
+}
+async function seedMem(){
+  const b=v('seed-brand'),i=v('seed-industry');
+  if(!b||!i)return alert('Fill in brand and industry');
+  try{await P(`/echo/brand-memory/seed?brand_name=${b}&industry=${i}`,{});alert('✅ Brand memory seeded!');}
+  catch(e){alert('Error: '+e.message);}
+}
+
+// ── INIT ────────────────────────────────────────────────
+checkStatus();
+setInterval(checkStatus, 30000);
+loadStats();
+</script>
+</body>
+</html>
