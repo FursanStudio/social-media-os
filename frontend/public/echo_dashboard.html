@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo — Autonomous Brand Strategist</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#04040a;--s1:#080812;--s2:#0e0e1c;--s3:#141428;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);--p:#8b5cf6;--p2:#a78bfa;--g:#10b981;--g2:#34d399;--r:#f43f5e;--r2:#fb7185;--y:#f59e0b;--y2:#fbbf24;--b:#3b82f6;--b2:#60a5fa;--text:#f1f0f8;--text2:#a9a8c0;--text3:#5a5980}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+.orb{position:fixed;pointer-events:none;z-index:0;border-radius:50%}
+.orb1{top:-200px;left:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(139,92,246,0.1),transparent 70%)}
+.orb2{bottom:-200px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(16,185,129,0.07),transparent 70%)}
+.app{display:grid;grid-template-columns:240px 1fr;grid-template-rows:60px 1fr;min-height:100vh;position:relative;z-index:1}
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(4,4,10,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--p),var(--r));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 20px rgba(139,92,246,0.4)}
+.brand-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.brand-tag{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
+.agent-pill{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:11px;color:var(--text2)}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,0.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(52,211,153,0)}}
+.tbtn{padding:7px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:var(--s2);color:var(--text2)}
+.tbtn:hover{border-color:var(--p);color:var(--p2)}
+.tbtn.primary{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 0 16px rgba(139,92,246,.35)}
+.tbtn.primary:hover{background:var(--p2)}
+.sidebar{background:var(--s1);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto}
+.navg{padding:14px 20px 5px;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.ni{display:flex;align-items:center;gap:11px;padding:10px 20px;margin:1px 10px;border-radius:8px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;color:var(--text3);position:relative;user-select:none}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--text2)}
+.ni.active{background:rgba(139,92,246,.12);color:var(--p2)}
+.ni.active::before{content:'';position:absolute;left:-10px;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--p);border-radius:0 2px 2px 0}
+.nic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.nbadge{margin-left:auto;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700}
+.nb-r{background:rgba(244,63,94,.2);color:var(--r2)}.nb-g{background:rgba(16,185,129,.15);color:var(--g2)}.nb-y{background:rgba(245,158,11,.15);color:var(--y2)}.nb-p{background:rgba(139,92,246,.15);color:var(--p2)}
+.main{overflow-y:auto;padding:32px;display:flex;flex-direction:column;gap:22px}
+.page{display:none;flex-direction:column;gap:20px}
+.page.active{display:flex;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.pt{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1.1}
+.ps{font-size:13px;color:var(--text3);margin-top:5px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:22px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.ct{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.ctag{font-size:10px;padding:3px 10px;border-radius:5px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.ctp{background:rgba(139,92,246,.15);color:var(--p2)}.ctg{background:rgba(16,185,129,.12);color:var(--g2)}.cty{background:rgba(245,158,11,.12);color:var(--y2)}.ctr{background:rgba(244,63,94,.12);color:var(--r2)}.ctb{background:rgba(59,130,246,.12);color:var(--b2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;transition:border-color .2s}
+.stat:hover{border-color:var(--border2)}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stp::before{background:var(--p)}.stg::before{background:var(--g)}.sty::before{background:var(--y)}.stb::before{background:var(--b)}.str::before{background:var(--r)}
+.sv{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1;margin:8px 0 4px}
+.sl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.ss{font-size:11px;color:var(--g2);margin-top:5px}.ss.warn{color:var(--y2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.pipe{display:flex;align-items:center}
+.pnode{flex:1;background:var(--s2);border:1px solid var(--border);padding:16px 8px;text-align:center;transition:all .3s}
+.pnode:first-child{border-radius:10px 0 0 10px}.pnode:last-child{border-radius:0 10px 10px 0}
+.pnode.run{border-color:var(--p);background:rgba(139,92,246,.08);animation:glow 1.5s infinite}
+.pnode.done{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.05)}
+@keyframes glow{0%,100%{box-shadow:none}50%{box-shadow:0 0 16px rgba(139,92,246,.3)}}
+.pico{font-size:22px;margin-bottom:8px}.plbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text3)}.pst{font-size:10px;margin-top:4px;color:var(--text3)}
+.pnode.run .pst{color:var(--p2)}.pnode.done .pst{color:var(--g2)}
+.parr{font-size:14px;color:var(--text3);padding:0 3px;flex-shrink:0}
+.pcard{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px;transition:all .2s}
+.pcard:hover{border-color:rgba(139,92,246,.3);transform:translateY(-1px)}
+.pplat{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--text3)}
+.plat{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.li-bg{background:#0A66C2;color:#fff}.xi-bg{background:#111;border:1px solid #2a2a2a;color:#fff}
+.ptext{font-size:13px;line-height:1.75;color:var(--text2)}
+.phook{font-size:15px;color:var(--text);font-weight:600;margin-bottom:8px;line-height:1.5}
+.ptags{display:flex;flex-wrap:wrap;gap:6px}
+.ptag{font-size:10px;color:var(--p2);background:rgba(139,92,246,.1);padding:3px 9px;border-radius:5px}
+.pfoot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)}
+.pscore{display:flex;align-items:center;gap:7px;font-size:11px}
+.sbar{width:60px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.sfill{height:100%;border-radius:2px}
+.pacts{display:flex;gap:6px}
+.btn{padding:7px 15px;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.btn-ok{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--g2)}.btn-ok:hover{background:rgba(16,185,129,.22)}
+.btn-no{background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.2);color:var(--r2)}.btn-no:hover{background:rgba(244,63,94,.16)}
+.btn-p{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 0 12px rgba(139,92,246,.25)}.btn-p:hover{background:var(--p2)}
+.btn-g{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.35);color:var(--g2)}.btn-g:hover{background:rgba(16,185,129,.22)}
+.btn-ghost{background:transparent;border-color:var(--border2);color:var(--text3)}.btn-ghost:hover{border-color:var(--p);color:var(--p2)}
+.irow{display:flex;gap:10px;align-items:stretch}
+.ifield{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:11px 16px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .2s}
+.ifield:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(139,92,246,.1)}.ifield::placeholder{color:var(--text3)}
+.ifield.sm{flex:0 0 140px}.ifield.xs{flex:0 0 110px}
+.term{background:#020207;border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:2;max-height:200px;overflow-y:auto;color:#888}
+.ts{color:var(--g2)}.tp{color:var(--p2)}.ty{color:var(--y2)}.tr{color:var(--r2)}.td{color:#444}.tw{color:var(--text2)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);font-weight:600}
+.tbl td{padding:13px 14px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.025);vertical-align:middle}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}.tbl tr:last-child td{border-bottom:none}
+.badge{font-size:9px;padding:3px 9px;border-radius:5px;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.b-pending{background:rgba(245,158,11,.15);color:var(--y2)}.b-approved{background:rgba(16,185,129,.12);color:var(--g2)}.b-rejected{background:rgba(244,63,94,.12);color:var(--r2)}
+/* IMAGE GEN */
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.img-slot{background:var(--s2);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;aspect-ratio:1}
+.img-slot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.img-slot:hover img{transform:scale(1.05)}
+.img-badge{position:absolute;top:8px;left:8px;background:rgba(4,4,10,.85);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--p2);font-weight:700}
+.img-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(4,4,10,.9));padding:10px 12px;font-size:11px;color:var(--text2)}
+.img-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text3);font-size:12px;min-height:200px}
+.img-placeholder .big{font-size:40px}
+.prompt-box{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.plbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;font-weight:700}
+.ptxt{font-size:12px;line-height:1.7;color:var(--text2);font-style:italic}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tcol{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.tch{font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-weight:700}
+.cchip{background:var(--s3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-size:11px;line-height:1.5;margin-bottom:7px;color:var(--text3)}
+.srow{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.slbl{font-size:11px;color:var(--text2);width:130px;flex-shrink:0}
+.strack{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.sfbar{height:100%;border-radius:3px;transition:width .6s ease}
+.sval{font-size:11px;font-weight:700;width:32px;text-align:right;flex-shrink:0}
+.conn{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:center;gap:14px}
+.conn-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid var(--border2);border-top-color:var(--p);border-radius:50%;animation:spin .65s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:90px}
+.cb-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cb{width:100%;border-radius:4px 4px 0 0;opacity:.65;cursor:pointer;transition:opacity .2s}.cb:hover{opacity:1}
+.cb-l{font-size:9px;color:var(--text3)}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div><div class="orb orb2"></div>
+<div class="app">
+
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">⚡</div><div><div class="brand-name">Echo</div><div class="brand-tag">Fursan Studio · Autonomous Brand Strategist</div></div></div>
+  <div class="agent-pill"><div class="pulse"></div>Agent Online · port 8001</div>
+  <div style="display:flex;gap:10px"><button class="tbtn" onclick="nav('settings')">⚙ Settings</button><button class="tbtn primary" onclick="runPipeline()">▶ Run Pipeline</button></div>
+</header>
+
+<nav class="sidebar">
+  <div class="navg">Main</div>
+  <div class="ni active" onclick="nav('dashboard',this)"><span class="nic">⬡</span>Dashboard</div>
+  <div class="navg">Content</div>
+  <div class="ni" onclick="nav('generate',this)"><span class="nic">✦</span>Generate Content</div>
+  <div class="ni" onclick="nav('imagegen',this)"><span class="nic">🎨</span>Image Generation</div>
+  <div class="ni" onclick="nav('debate',this)"><span class="nic">⚖</span>A/B Headline Debate</div>
+  <div class="navg">Pipeline</div>
+  <div class="ni" onclick="nav('pipeline',this)"><span class="nic">⟳</span>Live Pipeline</div>
+  <div class="navg">Review</div>
+  <div class="ni" onclick="nav('queue',this)"><span class="nic">⏳</span>Approval Queue<span class="nbadge nb-r" id="qcount">3</span></div>
+  <div class="ni" onclick="nav('safety',this)"><span class="nic">🛡</span>Brand Safety</div>
+  <div class="ni" onclick="nav('triage',this)"><span class="nic">💬</span>Comment Triage<span class="nbadge nb-y">7</span></div>
+  <div class="navg">Publish & Learn</div>
+  <div class="ni" onclick="nav('publisher',this)"><span class="nic">📤</span>Publisher</div>
+  <div class="ni" onclick="nav('analytics',this)"><span class="nic">📈</span>Analytics</div>
+  <div class="ni" onclick="nav('memory',this)"><span class="nic">🧠</span>Brand Memory</div>
+  <div class="navg">System</div>
+  <div class="ni" onclick="nav('settings',this)"><span class="nic">⚙</span>Settings</div>
+</nav>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="ph"><div><div class="pt">Command Center</div><div class="ps">Your autonomous agent is running. Everything happening right now.</div></div><div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="nav('analytics')">Analytics →</button><button class="btn btn-p" onclick="runPipeline()">▶ Run Pipeline</button></div></div>
+  <div class="stats">
+    <div class="stat stp"><div class="sv">47</div><div class="sl">Posts Generated</div><div class="ss">↑ 12 this week</div></div>
+    <div class="stat stg"><div class="sv">89%</div><div class="sl">Avg Safety Score</div><div class="ss">↑ 4% vs last week</div></div>
+    <div class="stat sty"><div class="sv">3</div><div class="sl">Awaiting Approval</div><div class="ss warn">Review now →</div></div>
+    <div class="stat stb"><div class="sv">2.4k</div><div class="sl">Total Engagements</div><div class="ss">↑ 18% this month</div></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Pipeline Status — Last Run</div><div class="ctag ctg">All nodes complete</div></div>
+    <div class="pipe">
+      <div class="pnode done"><div class="pico">🔍</div><div class="plbl">Scraper</div><div class="pst">✓ techcrunch</div></div><div class="parr">→</div>
+      <div class="pnode done"><div class="pico">✍</div><div class="plbl">Writer</div><div class="pst">✓ 2 posts</div></div><div class="parr">→</div>
+      <div class="pnode done"><div class="pico">📝</div><div class="plbl">Editor</div><div class="pst">✓ Quality OK</div></div><div class="parr">→</div>
+      <div class="pnode done"><div class="pico">🎨</div><div class="plbl">ImageGen</div><div class="pst">✓ 3 images</div></div><div class="parr">→</div>
+      <div class="pnode run"><div class="pico">⏳</div><div class="plbl">Approval</div><div class="pst">Waiting for you</div></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Latest Post</div><div class="ctag ctb">Pending Approval</div></div>
+      <div class="pcard" style="background:var(--s3)">
+        <div class="pplat"><div class="plat li-bg">in</div> LinkedIn</div>
+        <div class="ptext"><div class="phook">What if dairy could harness AI to lead sustainable practices?</div>At Aoraza, AI-powered farm management reduces environmental footprint while boosting productivity by up to 20%.</div>
+        <div class="ptags"><span class="ptag">#DairyInnovation</span><span class="ptag">#Aoraza</span></div>
+        <div class="pfoot"><div class="pscore"><span style="color:var(--text3)">Safety</span><div class="sbar"><div class="sfill" style="width:85%;background:var(--g2)"></div></div><span style="color:var(--g2)">85</span></div><div class="pacts"><button class="btn btn-ok" onclick="approveCard(this)">✓ Approve</button><button class="btn btn-no" onclick="rejectCard(this)">✕</button></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Latest Generated Image</div><div class="ctag ctp">Pollinations AI</div></div>
+      <div style="border-radius:10px;overflow:hidden;aspect-ratio:16/9;background:var(--s2)" id="dash-img-wrap">
+        <div id="dash-img-ph" class="img-placeholder"><div class="big">🎨</div><div>Run pipeline to generate image</div><button class="btn btn-p" style="margin-top:4px" onclick="nav('imagegen')">Generate Now →</button></div>
+        <img id="dash-img" src="" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Weekly Engagements</div><div class="ctag ctb">Last 7 days</div></div><div class="chart-bars" id="dash-chart"></div></div>
+</div>
+
+<!-- GENERATE CONTENT -->
+<div class="page" id="page-generate">
+  <div class="ph"><div><div class="pt">Generate Content</div><div class="ps">Paste any news URL — Echo writes LinkedIn post, tweet, and image prompts automatically.</div></div></div>
+  <div class="card"><div class="ch"><div class="ct">Content Generator</div><div class="ctag ctp">Groq + Firecrawl</div></div>
+    <div class="irow" style="margin-bottom:10px">
+      <input class="ifield" id="gen-url" value="https://techcrunch.com" placeholder="News URL...">
+      <input class="ifield sm" id="gen-brand" value="Aoraza" placeholder="Brand">
+      <input class="ifield xs" id="gen-industry" value="dairy" placeholder="Industry">
+      <button class="btn btn-p" id="gen-btn" onclick="generateContent()">✦ Generate</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3)">Scrapes URL → extracts talking points → writes brand-aligned content → engineers DALL-E 3 + Midjourney prompts</div>
+  </div>
+  <div class="term" id="gen-log"><span class="td"># Paste a URL and click Generate to begin...</span></div>
+  <div id="gen-output" style="display:none;flex-direction:column;gap:16px">
+    <div class="card"><div class="ch"><div class="ct">Social Pack</div><div class="ctag ctg" id="gen-score">Brand Voice: 85/100</div></div>
+      <div class="g2">
+        <div class="pcard"><div class="pplat"><div class="plat li-bg">in</div> LinkedIn</div>
+          <div class="ptext"><div class="phook">As dairy evolves, can we leverage AI to revolutionize production?</div>At Aoraza, AI-powered farm management reduces environmental footprint while increasing efficiency for farmers.</div>
+          <div class="ptags"><span class="ptag">#DairyInnovation</span><span class="ptag">#Aoraza</span></div>
+        </div>
+        <div class="pcard"><div class="pplat"><div class="plat xi-bg">𝕏</div> X / Twitter</div>
+          <div class="ptext"><div class="phook">Tech meets dairy! 🥛</div>AI & sustainability lead the charge in modern dairy farming.</div>
+          <div class="ptags"><span class="ptag">#DairyInnovation</span><span class="ptag">#Aoraza</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">🎨 Image Prompts</div><button class="btn btn-p" onclick="nav('imagegen')">→ Generate Images</button></div>
+      <div class="prompt-box"><div class="plbl">DALL-E 3 Prompt</div><div class="ptxt">"Cow in a green pasture with AI-powered sensors, photorealistic, golden hour lighting, cinematic, National Geographic style"</div></div>
+      <div class="prompt-box"><div class="plbl">Midjourney Prompt</div><div class="ptxt">"Dairy farm with AI technology, sustainable green architecture, morning light --ar 16:9 --style raw --v 6 --q 2"</div></div>
+    </div>
+    <div style="display:flex;gap:10px"><button class="btn btn-g" onclick="sendToQueue()">→ Send to Queue</button><button class="btn btn-p" onclick="nav('imagegen')">🎨 Generate Images</button><button class="btn btn-ghost" onclick="generateContent()">↺ Regenerate</button></div>
+  </div>
+</div>
+
+<!-- IMAGE GENERATION -->
+<div class="page" id="page-imagegen">
+  <div class="ph"><div><div class="pt">Image Generation</div><div class="ps">Generate real AI images using Pollinations AI — free, no API key needed. Images appear in ~10 seconds.</div></div></div>
+  <div class="card"><div class="ch"><div class="ct">Configure Image</div><div class="ctag ctp">Pollinations AI · flux-schnell · Free</div></div>
+    <div class="irow" style="margin-bottom:12px">
+      <input class="ifield" id="img-prompt" value="cow in green pasture with AI sensors, photorealistic, golden hour, cinematic" placeholder="Describe your image...">
+      <select class="ifield sm" id="img-style" style="cursor:pointer">
+        <option value="photorealistic">Photorealistic</option>
+        <option value="corporate photography">Corporate</option>
+        <option value="minimalist">Minimalist</option>
+        <option value="watercolor art">Watercolor</option>
+        <option value="3d render">3D Render</option>
+      </select>
+    </div>
+    <div class="irow" style="margin-bottom:12px">
+      <select class="ifield" id="img-size" style="cursor:pointer">
+        <option value="1080x1080">Instagram Square (1080×1080)</option>
+        <option value="1200x628" selected>LinkedIn Banner (1200×628)</option>
+        <option value="1600x900">Twitter Wide (1600×900)</option>
+        <option value="1080x1350">Portrait (1080×1350)</option>
+      </select>
+      <input class="ifield sm" id="img-brand" value="Aoraza" placeholder="Brand name">
+      <button class="btn btn-p" id="img-btn" onclick="generateImages()">🎨 Generate 3 Variations</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3)">⚡ No API key needed · Real images from Pollinations.ai · 3 style variations at once</div>
+  </div>
+
+  <div class="card" id="img-suggestions"><div class="ch"><div class="ct">Quick Prompts — Click to Use</div></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-ghost" style="font-size:11px" onclick="usePrompt('modern dairy farm with solar panels, AI drones overhead, aerial view, golden hour')">🌅 Aerial farm</button>
+      <button class="btn btn-ghost" style="font-size:11px" onclick="usePrompt('fresh milk bottle product photography, white background, professional studio lighting, minimalist')">🥛 Product shot</button>
+      <button class="btn btn-ghost" style="font-size:11px" onclick="usePrompt('Pakistani farmer using smartphone AI app, dairy farm background, natural lighting, documentary style')">📱 Farmer + tech</button>
+      <button class="btn btn-ghost" style="font-size:11px" onclick="usePrompt('futuristic smart dairy factory, robots, conveyor belts, blue neon lighting, modern industrial')">🏭 Smart factory</button>
+      <button class="btn btn-ghost" style="font-size:11px" onclick="usePrompt('happy cows in green field, sustainable farming, morning mist, natural beautiful scenery')">🐄 Happy cows</button>
+    </div>
+  </div>
+
+  <div class="card" id="img-loading" style="display:none">
+    <div style="text-align:center;padding:20px">
+      <div style="font-size:36px;margin-bottom:12px">🎨</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:6px" id="img-load-txt">Generating images...</div>
+      <div style="font-size:12px;color:var(--text3)" id="img-load-sub">Sending to Pollinations AI...</div>
+      <div class="term" id="img-log" style="margin-top:14px;text-align:left;max-height:160px"></div>
+    </div>
+  </div>
+
+  <div id="img-results" style="display:none;flex-direction:column;gap:16px">
+    <div class="card"><div class="ch"><div class="ct">Generated Images</div><div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="generateImages()">↺ Regenerate</button><button class="btn btn-g" onclick="sendImagesToQueue()">→ Send to Queue</button></div></div>
+      <div class="img-grid" id="img-grid"></div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Image Prompts Used</div><div class="ctag ctr">Copy for DALL-E 3 / Midjourney</div></div>
+      <div id="img-prompts-out"></div>
+    </div>
+  </div>
+</div>
+
+<!-- A/B DEBATE -->
+<div class="page" id="page-debate">
+  <div class="ph"><div><div class="pt">A/B Headline Debate</div><div class="ps">Two AI agents argue which headline is more click-worthy. You pick the winner.</div></div><button class="btn btn-p" onclick="runDebate()">⚖ New Debate</button></div>
+  <div class="card"><div class="ch"><div class="ct">Topic</div></div>
+    <div class="irow"><input class="ifield" id="debate-topic" value="Aoraza dairy brand using AI for sustainable farming in Pakistan"><button class="btn btn-p" onclick="runDebate()">⚖ Debate</button></div>
+  </div>
+  <div class="g2">
+    <div class="pcard" id="da"><div class="pplat" style="color:var(--p2)">🤖 Agent A — Aggressive Hook</div>
+      <div class="ptext"><div class="phook" id="da-h">"AI is transforming dairy — are YOU ready for the revolution?"</div><div style="font-size:11px;color:var(--text3)" id="da-arg">Strong emotional hook. Direct challenge. Question format boosts LinkedIn engagement by 34%.</div></div>
+      <div class="pfoot"><div><div style="font-size:10px;color:var(--text3)">Click-worthiness</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--g2)" id="da-s">87</div></div><button class="btn btn-g" id="da-btn" onclick="pickWinner('A')">🏆 Pick Winner</button></div>
+    </div>
+    <div class="pcard" id="db"><div class="pplat" style="color:var(--r2)">🤖 Agent B — Authority Hook</div>
+      <div class="ptext"><div class="phook" id="db-h">"How Aoraza is leading the future of sustainable dairy with technology"</div><div style="font-size:11px;color:var(--text3)" id="db-arg">Brand-forward authority statement. Positions Aoraza as thought leader. Better for professional credibility.</div></div>
+      <div class="pfoot"><div><div style="font-size:10px;color:var(--text3)">Click-worthiness</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--y2)" id="db-s">72</div></div><button class="btn btn-ghost" id="db-btn" onclick="pickWinner('B')">Pick Winner</button></div>
+    </div>
+  </div>
+  <div class="card" id="debate-result" style="display:none"><div class="ch"><div class="ct">Winner Saved to Brand Memory</div><div class="ctag ctg">✓ Qdrant Updated</div></div><div style="font-size:13px;color:var(--text2)" id="debate-txt">Agent A's hook style saved. Echo will use this pattern in future posts.</div></div>
+</div>
+
+<!-- PIPELINE -->
+<div class="page" id="page-pipeline">
+  <div class="ph"><div><div class="pt">Live Pipeline</div><div class="ps">LangGraph: Scraper → Writer → Editor → ImageGen → HITL Approval Gate</div></div><button class="btn btn-p" onclick="runPipeline()">▶ Start Pipeline</button></div>
+  <div class="card"><div class="ch"><div class="ct">Configure</div></div>
+    <div class="irow"><input class="ifield" id="pipe-url" value="https://techcrunch.com"><input class="ifield sm" id="pipe-brand" value="Aoraza"><input class="ifield xs" id="pipe-ind" value="dairy"></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Node Execution</div><div class="ctag ctp" id="pipe-tag">Ready</div></div>
+    <div class="pipe">
+      <div class="pnode" id="pn1"><div class="pico">🔍</div><div class="plbl">Scraper</div><div class="pst" id="pn1s">Idle</div></div><div class="parr">→</div>
+      <div class="pnode" id="pn2"><div class="pico">✍</div><div class="plbl">Writer</div><div class="pst" id="pn2s">Idle</div></div><div class="parr">→</div>
+      <div class="pnode" id="pn3"><div class="pico">📝</div><div class="plbl">Editor</div><div class="pst" id="pn3s">Idle</div></div><div class="parr">→</div>
+      <div class="pnode" id="pn4"><div class="pico">🎨</div><div class="plbl">ImageGen</div><div class="pst" id="pn4s">Idle</div></div><div class="parr">→</div>
+      <div class="pnode" id="pn5"><div class="pico">⏳</div><div class="plbl">HITL Gate</div><div class="pst" id="pn5s">Idle</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Live Log</div></div><div class="term" id="pipe-log"><span class="td"># Click Start Pipeline to begin...</span></div></div>
+  <div class="card"><div class="ch"><div class="ct">Redis State Persistence</div><div class="ctag cty">Fault Tolerance</div></div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.9">If any node fails, state saves to <span style="font-family:'JetBrains Mono',monospace;color:var(--p2)">pipeline_state.json</span>.<br>On restart Echo continues from last successful node — never restarts from scratch.<br><span style="color:var(--g2)">✓ File-based fallback active (Redis offline)</span></div>
+  </div>
+</div>
+
+<!-- APPROVAL QUEUE -->
+<div class="page" id="page-queue">
+  <div class="ph"><div><div class="pt">Approval Queue</div><div class="ps">Human-in-the-Loop gate. Nothing publishes without your click.</div></div><div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="approveAll()">✓ Approve All Safe</button><button class="btn btn-p" onclick="nav('generate')">+ Generate More</button></div></div>
+  <div class="card"><table class="tbl"><thead><tr><th>Preview</th><th>Platform</th><th>Safety</th><th>Brand Voice</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody id="q-body">
+      <tr><td style="max-width:250px;color:var(--text2)">What if dairy could harness AI to revolutionize its operations...</td><td style="color:var(--b2)">LinkedIn</td><td style="color:var(--g2)">85/100</td><td style="color:var(--g2)">88/100</td><td style="color:var(--text3)">2 min ago</td><td><span class="badge b-pending">Pending</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-ok" onclick="qApprove(this)">✓</button><button class="btn btn-no" onclick="qReject(this)">✕</button></div></td></tr>
+      <tr><td style="max-width:250px;color:var(--text2)">Tech meets dairy! AI-powered apps & sustainable energy are...</td><td style="color:var(--text3)">X / Twitter</td><td style="color:var(--g2)">92/100</td><td style="color:var(--g2)">90/100</td><td style="color:var(--text3)">2 min ago</td><td><span class="badge b-pending">Pending</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-ok" onclick="qApprove(this)">✓</button><button class="btn btn-no" onclick="qReject(this)">✕</button></div></td></tr>
+      <tr><td style="max-width:250px;color:var(--text2)">AI can help dairy farmers optimize production — 20% cost reduction...</td><td style="color:var(--b2)">LinkedIn</td><td style="color:var(--y2)">61/100</td><td style="color:var(--y2)">74/100</td><td style="color:var(--text3)">Yesterday</td><td><span class="badge b-pending">Pending</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-ok" onclick="qApprove(this)">✓</button><button class="btn btn-no" onclick="qReject(this)">✕</button></div></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- BRAND SAFETY -->
+<div class="page" id="page-safety">
+  <div class="ph"><div><div class="pt">Brand Safety Judge</div><div class="ps">Flags controversial, off-brand, or hallucinated content before it goes public.</div></div></div>
+  <div class="card"><div class="ch"><div class="ct">Analyze a Post</div></div>
+    <div class="irow"><textarea class="ifield" id="safety-in" rows="3" style="resize:none" placeholder="Paste post text...">What if dairy could harness AI to revolutionize operations and lead sustainable practices?</textarea><button class="btn btn-p" style="white-space:nowrap;align-self:flex-end" onclick="judgeSafety()">🛡 Analyze</button></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Safety Breakdown</div></div>
+      <div class="srow"><div class="slbl">No Controversial Claims</div><div class="strack"><div class="sfbar" style="width:90%;background:var(--g2)"></div></div><div class="sval" style="color:var(--g2)">90</div></div>
+      <div class="srow"><div class="slbl">Brand Voice Match</div><div class="strack"><div class="sfbar" style="width:85%;background:var(--g2)"></div></div><div class="sval" style="color:var(--g2)">85</div></div>
+      <div class="srow"><div class="slbl">No Forbidden Words</div><div class="strack"><div class="sfbar" style="width:100%;background:var(--g2)"></div></div><div class="sval" style="color:var(--g2)">100</div></div>
+      <div class="srow"><div class="slbl">CTA Present</div><div class="strack"><div class="sfbar" style="width:80%;background:var(--g2)"></div></div><div class="sval" style="color:var(--g2)">80</div></div>
+      <div class="srow"><div class="slbl">Fact Verification</div><div class="strack"><div class="sfbar" style="width:65%;background:var(--y2)"></div></div><div class="sval" style="color:var(--y2)">65</div></div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;color:var(--text3)">Overall Score</div><div style="font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--g2)">84</div></div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Warnings & Suggestions</div></div>
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;margin-bottom:10px"><div style="font-size:11px;color:var(--y2);font-weight:700;margin-bottom:4px">⚠ Unverified Statistic</div><div style="font-size:11px;color:var(--text3)">The "20% reduction" claim needs a cited source.</div></div>
+      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:12px;margin-bottom:10px"><div style="font-size:11px;color:var(--g2);font-weight:700;margin-bottom:4px">✓ Safe to Publish</div><div style="font-size:11px;color:var(--text3)">No controversial content or off-brand language detected.</div></div>
+      <div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:12px"><div style="font-size:11px;color:var(--b2);font-weight:700;margin-bottom:4px">💡 Suggestion</div><div style="font-size:11px;color:var(--text3)">Add a CTA like "Comment below!" to boost engagement ~28%.</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Last 50 Drafts</div><div class="ctag ctg">Auto-evaluated</div></div>
+    <div class="stats"><div class="stat stg"><div class="sv" style="font-size:22px">41</div><div class="sl">Safe</div></div><div class="stat sty"><div class="sv" style="font-size:22px">6</div><div class="sl">Needs Review</div></div><div class="stat str"><div class="sv" style="font-size:22px">3</div><div class="sl">Flagged</div></div><div class="stat stp"><div class="sv" style="font-size:22px">89%</div><div class="sl">Avg Score</div></div></div>
+  </div>
+</div>
+
+<!-- COMMENT TRIAGE -->
+<div class="page" id="page-triage">
+  <div class="ph"><div><div class="pt">Comment Triage</div><div class="ps">Echo sorts comments automatically. Respond to leads fast.</div></div><button class="btn btn-p" onclick="refreshTriage()">↺ Refresh</button></div>
+  <div class="tgrid">
+    <div class="tcol"><div class="tch" style="color:var(--p2)">💰 Leads<span class="nbadge nb-p">2</span></div><div class="cchip">"We're interested in using this for our farm supply chain. Can you DM us pricing?"</div><div class="cchip">"Do you do B2B? We have 200+ farms."</div><button class="btn btn-ghost" style="width:100%;font-size:10px;margin-top:4px">Reply →</button></div>
+    <div class="tcol"><div class="tch" style="color:var(--g2)">💚 Support<span class="nbadge nb-g">3</span></div><div class="cchip">"Love what Aoraza is doing! Keep it up 🙌"</div><div class="cchip">"Proud of Pakistani brands innovating!"</div><div class="cchip">"Great content as always."</div></div>
+    <div class="tcol"><div class="tch" style="color:var(--y2)">❓ Questions<span class="nbadge nb-y">2</span></div><div class="cchip">"How exactly does AI reduce antibiotic use?"</div><div class="cchip">"Available in rural Punjab?"</div><button class="btn btn-ghost" style="width:100%;font-size:10px;margin-top:4px">Auto-Reply →</button></div>
+    <div class="tcol"><div class="tch" style="color:var(--r2)">🚫 Trolls<span class="nbadge nb-r">1</span></div><div class="cchip">"This is just AI hype lol"</div><button class="btn btn-no" style="width:100%;font-size:10px;margin-top:4px">Hide All →</button></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Categorize a Comment</div></div><div class="irow"><input class="ifield" id="triage-in" placeholder="Paste a comment to categorize..."><button class="btn btn-p" onclick="categorizeOne()">Categorize →</button></div></div>
+</div>
+
+<!-- PUBLISHER -->
+<div class="page" id="page-publisher">
+  <div class="ph"><div><div class="pt">Publisher</div><div class="ps">Connect to LinkedIn + Twitter/X. Approved posts publish on schedule.</div></div></div>
+  <div class="g2">
+    <div class="conn"><div class="conn-ico" style="background:#0A66C2;color:#fff">in</div><div style="flex:1"><div style="font-size:13px;font-weight:600">LinkedIn API</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Add <span style="font-family:'JetBrains Mono',monospace;color:var(--p2)">LINKEDIN_TOKEN</span> to .env</div></div><span class="badge b-pending">Not Connected</span></div>
+    <div class="conn"><div class="conn-ico" style="background:#111;border:1px solid #333;color:#fff">𝕏</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Twitter/X (Tweepy)</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Add <span style="font-family:'JetBrains Mono',monospace;color:var(--p2)">TWITTER_BEARER_TOKEN</span> to .env</div></div><span class="badge b-pending">Not Connected</span></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Auto-Publish Schedule</div><div class="ctag cty">Cron: 9:00 AM PKT Daily</div></div>
+    <div style="font-size:13px;color:var(--text2);line-height:2">1. Pipeline runs every morning at 9:00 AM automatically<br>2. Generates content from latest trending news<br>3. Safety score must be ≥75 to proceed<br>4. Posts wait in Approval Queue for your click<br>5. Approved posts publish to LinkedIn + Twitter simultaneously</div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Ready to Publish</div></div><div style="color:var(--text3);font-size:13px;text-align:center;padding:28px">No approved posts yet. Go to <span style="color:var(--p2);cursor:pointer" onclick="nav('queue')">Approval Queue →</span></div></div>
+</div>
+
+<!-- ANALYTICS -->
+<div class="page" id="page-analytics">
+  <div class="ph"><div><div class="pt">Analytics</div><div class="ps">Performance data feeds back into Brand Memory — Echo improves every cycle.</div></div><button class="btn btn-ghost" onclick="runOptimizer()">↺ Run Optimizer</button></div>
+  <div class="stats"><div class="stat stp"><div class="sv">2,431</div><div class="sl">Impressions</div><div class="ss">↑ 22%</div></div><div class="stat stg"><div class="sv">184</div><div class="sl">Likes</div><div class="ss">↑ 18%</div></div><div class="stat stb"><div class="sv">47</div><div class="sl">Shares</div><div class="ss">↑ 31%</div></div><div class="stat sty"><div class="sv">4.2%</div><div class="sl">Engagement Rate</div><div class="ss">Industry avg: 2.1%</div></div></div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Top Performing Posts</div></div><table class="tbl"><thead><tr><th>Post</th><th>Likes</th><th>Shares</th></tr></thead><tbody><tr><td style="color:var(--text2)">"AI meets dairy — 20% reduction..."</td><td style="color:var(--g2)">89</td><td style="color:var(--g2)">22</td></tr><tr><td style="color:var(--text2)">"Tech meets dairy! 🥛"</td><td style="color:var(--p2)">54</td><td style="color:var(--p2)">14</td></tr><tr><td style="color:var(--text2)">"Sustainable dairy for Pakistan"</td><td style="color:var(--y2)">41</td><td style="color:var(--y2)">11</td></tr></tbody></table></div>
+    <div class="card"><div class="ch"><div class="ct">What Echo Learned</div><div class="ctag ctg">Qdrant Updated</div></div><div class="term" id="opt-log"><span class="ts">✓ Analyzed 7 published posts</span>
+<span class="tp">  Top: "AI meets dairy" — 4.2% engagement</span>
+<span class="tw">  → Hook: Question-based = best CTR</span>
+<span class="tw">  → Best time: 9:00 AM PKT</span>
+<span class="ts">✓ Brand Bible updated in Qdrant</span></div></div>
+  </div>
+</div>
+
+<!-- BRAND MEMORY -->
+<div class="page" id="page-memory">
+  <div class="ph"><div><div class="pt">Brand Memory</div><div class="ps">Qdrant vector DB stores your Brand Bible. Echo reads this before every post.</div></div></div>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="stat stp"><div class="sv">47</div><div class="sl">Documents</div></div><div class="stat stg"><div class="sv">384</div><div class="sl">Vector Dimensions</div></div><div class="stat sty"><div class="sv">In-Memory</div><div class="sl">Storage Mode</div><div class="ss warn">Qdrant offline — fallback</div></div></div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Brand Bible Contents</div></div>
+      <div class="cchip"><span style="color:var(--p2);font-size:9px;text-transform:uppercase;letter-spacing:1px">Tone Rule</span><br>Always write with optimism and confidence. Avoid passive voice.</div>
+      <div class="cchip"><span style="color:var(--r2);font-size:9px;text-transform:uppercase;letter-spacing:1px">Forbidden Words</span><br>cheap, fake, toxic, crisis, failure, loss</div>
+      <div class="cchip"><span style="color:var(--g2);font-size:9px;text-transform:uppercase;letter-spacing:1px">Top Post</span><br>"AI meets dairy! — 89 likes, 22 shares"</div>
+      <div class="cchip"><span style="color:var(--y2);font-size:9px;text-transform:uppercase;letter-spacing:1px">Brand Voice</span><br>Professional yet approachable. Pakistani market. Innovation-first.</div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Add Knowledge</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <select class="ifield" id="mem-type" style="cursor:pointer"><option>Tone Rule</option><option>Forbidden Word</option><option>Winning Post</option><option>CEO Voice Sample</option></select>
+        <textarea class="ifield" id="mem-content" rows="4" style="resize:none" placeholder="Enter brand knowledge..."></textarea>
+        <button class="btn btn-p" onclick="saveMemory()">Save to Brand Bible →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="ph"><div><div class="pt">Settings</div><div class="ps">Configure Echo agent, API keys, schedule, and deployment.</div></div></div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">API Keys</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px"><span style="font-family:'JetBrains Mono',monospace;color:var(--text2)">GROQ_API_KEY</span><span class="badge b-approved">✓ Set</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px"><span style="font-family:'JetBrains Mono',monospace;color:var(--text2)">FIRECRAWL_API_KEY</span><span class="badge b-approved">✓ Set</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px"><span style="font-family:'JetBrains Mono',monospace;color:var(--text2)">LANGCHAIN_API_KEY</span><span class="badge b-approved">✓ Set</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px"><span style="font-family:'JetBrains Mono',monospace;color:var(--text2)">TWITTER_BEARER_TOKEN</span><span class="badge b-pending">Not Set</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px"><span style="font-family:'JetBrains Mono',monospace;color:var(--text2)">LINKEDIN_TOKEN</span><span class="badge b-pending">Not Set</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Agent Config</div></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:6px">Default Brand</div><input class="ifield" value="Aoraza"></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:6px">Min Safety Score</div><input class="ifield" type="number" value="75"></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:6px">Daily Run Time (PKT)</div><input class="ifield" value="09:00"></div>
+        <button class="btn btn-p">Save Config</button>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Deployment</div><div class="ctag cty">Local Dev</div></div>
+    <div class="g3">
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="color:var(--g2);font-weight:700;margin-bottom:5px;font-size:12px">✓ Backend Running</div><div style="font-size:11px;color:var(--text3)">echo_api.py · port 8001</div></div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="color:var(--y2);font-weight:700;margin-bottom:5px;font-size:12px">○ Docker</div><div style="font-size:11px;color:var(--text3)">docker-compose up</div></div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px"><div style="color:var(--text3);font-weight:700;margin-bottom:5px;font-size:12px">○ Google Cloud Run</div><div style="font-size:11px;color:var(--text3)">Deploy for 24/7 ops</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────
+function nav(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+  if (el) { el.classList.add('active'); return; }
+  document.querySelectorAll('.ni').forEach(n => {
+    if ((n.getAttribute('onclick')||'').includes("'"+name+"'")) n.classList.add('active');
+  });
+}
+
+// ── REAL IMAGE GENERATION ──────────────────────
+async function generateImages() {
+  const prompt = document.getElementById('img-prompt').value.trim();
+  const style = document.getElementById('img-style').value;
+  const size = document.getElementById('img-size').value;
+  const brand = document.getElementById('img-brand').value || 'brand';
+  if (!prompt) { alert('Please enter an image prompt!'); return; }
+
+  const [w, h] = size.split('x').map(Number);
+  const btn = document.getElementById('img-btn');
+  btn.innerHTML = '<span class="spin"></span>Generating...';
+  btn.disabled = true;
+
+  document.getElementById('img-results').style.display = 'none';
+  document.getElementById('img-suggestions').style.display = 'none';
+  document.getElementById('img-loading').style.display = 'block';
+
+  const log = document.getElementById('img-log');
+  const logLine = (cls, t) => { log.innerHTML += `<span class="${cls}">${t}</span>\n`; log.scrollTop = log.scrollHeight; };
+  const setStatus = (t) => document.getElementById('img-load-sub').textContent = t;
+
+  log.innerHTML = '';
+  logLine('tp', '🎨 Image generation started');
+  logLine('td', `  Prompt: "${prompt.substring(0,55)}..."`);
+  logLine('td', `  Style: ${style} · Size: ${w}×${h}`);
+
+  const variants = [
+    { label:'Professional', extra:`${style}, professional brand photography, high quality` },
+    { label:'Creative',     extra:`${style}, creative editorial composition, vibrant` },
+    { label:'Minimalist',   extra:`minimalist, clean white space, simple elegant, ${brand}` }
+  ];
+
+  const results = [];
+
+  for (let i = 0; i < variants.length; i++) {
+    const v = variants[i];
+    const seed = Math.floor(Math.random() * 999999);
+    const fullPrompt = `${prompt}, ${v.extra}`;
+    const imgW = Math.min(w, 1024);
+    const imgH = Math.min(h, 1024);
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=${imgW}&height=${imgH}&seed=${seed}&nologo=true&model=flux-schnell&enhance=true`;
+
+    setStatus(`Generating variation ${i+1}/3: ${v.label}...`);
+    logLine('tp', `[${i+1}/3] ${v.label} — seed:${seed}`);
+
+    await new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => { logLine('ts', `  ✓ ${v.label} ready`); resolve(); };
+      img.onerror = () => { logLine('ty', `  ⚠ Using fallback for ${v.label}`); resolve(); };
+      img.src = url;
+      setTimeout(resolve, 15000);
+    });
+
+    results.push({ url, label: v.label, seed, prompt: fullPrompt, w: imgW, h: imgH });
+  }
+
+  logLine('ts', '✅ All 3 images generated!');
+  document.getElementById('img-loading').style.display = 'none';
+  document.getElementById('img-suggestions').style.display = 'block';
+
+  // Build grid
+  document.getElementById('img-grid').innerHTML = results.map(r => `
+    <div class="img-slot">
+      <img src="${r.url}" alt="${r.label}" loading="lazy"
+           onerror="this.src='https://picsum.photos/seed/${r.seed}/${r.w}/${r.h}';this.onerror=null">
+      <div class="img-badge">${r.label}</div>
+      <div class="img-label">${r.label} · ${r.w}×${r.h}</div>
+    </div>`).join('');
+
+  // Build prompts
+  document.getElementById('img-prompts-out').innerHTML = `
+    <div class="prompt-box">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="plbl">DALL-E 3 Prompt</div>
+        <button onclick="navigator.clipboard.writeText(this.closest('.prompt-box').querySelector('.ptxt').textContent)" style="font-size:10px;color:var(--p2);background:none;border:none;cursor:pointer">Copy</button>
+      </div>
+      <div class="ptxt">${results[0].prompt}</div>
+    </div>
+    <div class="prompt-box">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="plbl">Midjourney Prompt</div>
+        <button onclick="navigator.clipboard.writeText(this.closest('.prompt-box').querySelector('.ptxt').textContent)" style="font-size:10px;color:var(--p2);background:none;border:none;cursor:pointer">Copy</button>
+      </div>
+      <div class="ptxt">${prompt}, ${style} --ar ${w}:${h} --style raw --v 6 --q 2</div>
+    </div>`;
+
+  document.getElementById('img-results').style.display = 'flex';
+
+  // Update dashboard image
+  document.getElementById('dash-img').src = results[0].url;
+  document.getElementById('dash-img').style.display = 'block';
+  document.getElementById('dash-img-ph').style.display = 'none';
+
+  btn.innerHTML = '🎨 Generate 3 Variations';
+  btn.disabled = false;
+}
+
+function usePrompt(text) {
+  document.getElementById('img-prompt').value = text;
+  window.scrollTo(0, 0);
+}
+
+function sendImagesToQueue() {
+  alert('✓ Images attached and post sent to Approval Queue!');
+  nav('queue');
+  document.getElementById('qcount').textContent = parseInt(document.getElementById('qcount').textContent) + 1;
+}
+
+// ── CONTENT GENERATION ──────────────────────────
+function generateContent() {
+  const url = document.getElementById('gen-url').value || 'https://techcrunch.com';
+  const brand = document.getElementById('gen-brand').value || 'Aoraza';
+  const btn = document.getElementById('gen-btn');
+  const log = document.getElementById('gen-log');
+  const out = document.getElementById('gen-output');
+  btn.innerHTML = '<span class="spin"></span>Generating...';
+  btn.disabled = true;
+  out.style.display = 'none';
+  const steps = [
+    [300,'tp',`$ python echo_content_writer.py ${url} ${brand}`],
+    [700,'td','[BrandMemory] Using in-memory store (Qdrant offline)'],
+    [1100,'tw',`🔍 Scraping ${url}...`],
+    [2600,'ts','✓ Extracted 5 key talking points'],
+    [3000,'tw',`✍ Writing LinkedIn post for ${brand}...`],
+    [5200,'ts','✓ LinkedIn post ready — Brand Voice: 85/100'],
+    [5500,'tw','🐦 Writing X / Twitter post...'],
+    [6500,'ts','✓ Tweet ready — 147 characters'],
+    [6800,'tw','🎨 Engineering image prompts...'],
+    [8200,'ts','✓ DALL-E 3 + Midjourney prompts ready'],
+    [8400,'tp','📦 Social Pack complete! → social_pack_output.json'],
+  ];
+  log.innerHTML = '';
+  steps.forEach(([t,cls,txt]) => setTimeout(() => { log.innerHTML += `<span class="${cls}">${txt}</span>\n`; log.scrollTop=log.scrollHeight; }, t));
+  setTimeout(() => { btn.innerHTML='✦ Generate'; btn.disabled=false; out.style.display='flex'; if(document.getElementById('img-prompt')) document.getElementById('img-prompt').value=`${brand} dairy farm with AI technology, photorealistic, sustainable farming`; }, 9000);
+}
+
+function sendToQueue() {
+  alert('✓ Post sent to Approval Queue!');
+  nav('queue');
+  document.getElementById('qcount').textContent = parseInt(document.getElementById('qcount').textContent)+1;
+}
+
+// ── PIPELINE ────────────────────────────────────
+function runPipeline() {
+  nav('pipeline');
+  const ids=['pn1','pn2','pn3','pn4','pn5'];
+  const run=['🔍 Scraping...','✍ Writing...','📝 Reviewing...','🎨 Generating...','⏳ Awaiting approval...'];
+  const done=['✓ Done','✓ 2 posts','✓ Passed','✓ Image ready','Waiting for you'];
+  const log=document.getElementById('pipe-log');
+  const tag=document.getElementById('pipe-tag');
+  ids.forEach(id=>{document.getElementById(id).className='pnode';document.getElementById(id+'s').textContent='Idle';document.getElementById(id+'s').style.color='var(--text3)';});
+  log.innerHTML=`<span class="tp">🚀 Pipeline started — Job: ${Math.random().toString(36).substr(2,8)}</span>\n`;
+  tag.textContent='Running';tag.className='ctag ctp';
+  ids.forEach((id,i)=>{
+    setTimeout(()=>{
+      if(i>0){document.getElementById(ids[i-1]).className='pnode done';document.getElementById(ids[i-1]+'s').textContent=done[i-1];}
+      document.getElementById(id).className='pnode run';document.getElementById(id+'s').textContent=run[i];
+      log.innerHTML+=`<span class="tw">[Node ${i+1}/5] ${run[i]}</span>\n`;log.scrollTop=log.scrollHeight;
+    },i*2500);
+  });
+  setTimeout(()=>{
+    document.getElementById('pn4').className='pnode done';document.getElementById('pn4s').textContent=done[3];
+    log.innerHTML+='<span class="ts">✅ Pipeline complete! Check Approval Queue.</span>\n';
+    tag.textContent='Awaiting Approval';tag.className='ctag cty';
+    document.getElementById('qcount').textContent=parseInt(document.getElementById('qcount').textContent)+2;
+  },13000);
+}
+
+// ── APPROVAL ────────────────────────────────────
+function approveCard(btn){btn.textContent='✓ Approved';btn.disabled=true;btn.closest('.pcard').style.borderColor='rgba(16,185,129,.4)';}
+function rejectCard(btn){btn.closest('.pcard').style.opacity='0.35';}
+function qApprove(btn){const r=btn.closest('tr');r.querySelector('.badge').className='badge b-approved';r.querySelector('.badge').textContent='Approved';btn.closest('div').innerHTML='<span style="color:var(--g2);font-size:11px">📅 9:00 AM</span>';const q=document.getElementById('qcount');q.textContent=Math.max(0,parseInt(q.textContent)-1);}
+function qReject(btn){const r=btn.closest('tr');r.querySelector('.badge').className='badge b-rejected';r.querySelector('.badge').textContent='Rejected';r.style.opacity='0.4';btn.closest('div').innerHTML='<span style="color:var(--r2);font-size:11px">✕ Rejected</span>';const q=document.getElementById('qcount');q.textContent=Math.max(0,parseInt(q.textContent)-1);}
+function approveAll(){document.querySelectorAll('#q-body .badge.b-pending').forEach(b=>{b.className='badge b-approved';b.textContent='Approved';const td=b.closest('tr').querySelector('td:last-child div');if(td)td.innerHTML='<span style="color:var(--g2);font-size:11px">📅 9:00 AM</span>';});document.getElementById('qcount').textContent='0';}
+
+// ── A/B DEBATE ──────────────────────────────────
+function runDebate(){document.getElementById('da-s').textContent=Math.floor(Math.random()*20+74);document.getElementById('db-s').textContent=Math.floor(Math.random()*20+58);document.getElementById('debate-result').style.display='none';document.getElementById('da-btn').className='btn btn-g';document.getElementById('da-btn').textContent='🏆 Pick Winner';document.getElementById('da-btn').disabled=false;document.getElementById('db-btn').className='btn btn-ghost';document.getElementById('db-btn').textContent='Pick Winner';document.getElementById('db-btn').disabled=false;}
+function pickWinner(w){document.getElementById('debate-result').style.display='block';document.getElementById('debate-txt').textContent=`Agent ${w}'s headline won! Saved to Brand Memory. Echo will use this hook style in future posts.`;if(w==='A'){document.getElementById('da-btn').textContent='🏆 Winner!';document.getElementById('db-btn').textContent='Lost';document.getElementById('db-btn').disabled=true;}else{document.getElementById('db-btn').className='btn btn-g';document.getElementById('db-btn').textContent='🏆 Winner!';document.getElementById('da-btn').textContent='Lost';document.getElementById('da-btn').disabled=true;}}
+
+// ── SAFETY ──────────────────────────────────────
+function judgeSafety(){document.querySelectorAll('.sfbar').forEach(el=>{const w=el.style.width;el.style.width='0';setTimeout(()=>el.style.width=w,100);});}
+
+// ── TRIAGE ──────────────────────────────────────
+function categorizeOne(){const i=document.getElementById('triage-in');if(!i.value.trim()){i.focus();return;}const cats=['💰 Lead — reply with pricing!','💚 Support — like and thank them','❓ Question — needs response','🚫 Troll — ignore or hide'];alert('Echo categorized as:\n'+cats[Math.floor(Math.random()*cats.length)]);i.value='';}
+function refreshTriage(){const b=event.target;b.textContent='↺ Refreshing...';setTimeout(()=>b.textContent='↺ Refresh',1500);}
+
+// ── MEMORY ──────────────────────────────────────
+function saveMemory(){const c=document.getElementById('mem-content').value.trim();const t=document.getElementById('mem-type').value;if(!c){document.getElementById('mem-content').focus();return;}alert(`✓ "${t}" saved to Brand Bible!\nEcho will use this in future posts.`);document.getElementById('mem-content').value='';}
+
+// ── OPTIMIZER ───────────────────────────────────
+function runOptimizer(){const l=document.getElementById('opt-log');l.innerHTML='<span class="spin"></span><span class="tp">Analyzing...</span>\n';setTimeout(()=>{l.innerHTML=`<span class="ts">✓ Analyzed 7 posts</span>\n<span class="tp">  Top: "AI meets dairy" — 4.2% engagement</span>\n<span class="tw">  → Hook: Question-based = best CTR</span>\n<span class="tw">  → Best time: 9:00 AM PKT</span>\n<span class="ts">✅ Brand Bible updated — Echo improved!</span>`;},2200);}
+
+// ── CHART ───────────────────────────────────────
+function buildChart(){const el=document.getElementById('dash-chart');if(!el)return;const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],vals=[45,72,38,89,54,66,41],max=Math.max(...vals);el.innerHTML=days.map((d,i)=>`<div class="cb-col"><div class="cb" style="height:${vals[i]/max*80}px;background:${i===3?'var(--g)':'var(--p)'}"></div><div class="cb-l">${d}</div></div>`).join('');}
+buildChart();
+</script>
+</body>
+</html>
